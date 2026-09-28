@@ -89,6 +89,11 @@ const EVENTS = [
 ];
 
 async function main() {
+  // idempotent: clear previous sample rows before re-seeding
+  await db.from("events").delete().eq("is_demo", true);
+  await db.from("relayers").delete().in("email", RELAYERS.map((r) => r.email));
+  await db.from("relay_lanes").delete().in("name", LANES.map((l) => l.name));
+
   // lanes
   const laneIds: string[] = [];
   for (const lane of LANES) {
@@ -114,7 +119,7 @@ async function main() {
 
   // events → sources → story pack → decision
   for (const ev of EVENTS) {
-    const { explainer_what, explainer_why, donation_ask, ...eventRow } = ev;
+    const { sources: _evSources, explainer_what, explainer_why, donation_ask, ...eventRow } = ev;
     const { data: e, error } = await db
       .from("events")
       .insert({ ...eventRow, explainer_what, explainer_why, donation_ask, is_demo: true, happened_at: new Date().toISOString() })
@@ -125,7 +130,13 @@ async function main() {
 
     const { data: srcs, error: sErr } = await db
       .from("sources")
-      .insert(ev.sources.map((s) => ({ ...s, event_id: eventId })))
+      .insert(
+        ev.sources.map((s) => ({
+          ...s,
+          event_id: eventId,
+          is_field_report: (s as { is_field_report?: boolean }).is_field_report ?? false,
+        })),
+      )
       .select("id, outlet");
     if (sErr) throw sErr;
 

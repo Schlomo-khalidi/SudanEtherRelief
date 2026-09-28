@@ -15,7 +15,7 @@
 | Layer | State |
 |---|---|
 | **L0 Foundations** | ✅ Scaffolded & building clean — Next 16 + TS in `web/`, design system ported, `/api/health` with DB probe, env template. Pushed to GitHub. ⬜ Vercel project + Sentry still open. |
-| **L1 Data core** | 🟡 Code done — `supabase/migrations/0001_init.sql` (12 tables, RLS, `event_chain` views) + `web/scripts/seed.ts` written. ⬜ Needs a live Supabase project: run migration → fill `.env.local` → seed. |
+| **L1 Data core** | ✅ **Live** — migration run on Supabase (`gbwtqknmawiruagjxnri`), seeded (4 lanes, 5 relayers, 3 events: 2 approved / 1 in review), RLS verified: anon reads see only approved events, anon writes rejected (42501). ⬜ Typed DB client still pending. |
 | **L2 Ingest/AI** · **L3 Public product** | ⬜ Next up |
 | **Design** | ✅ Final — 6 views as HTML + 2× renders in `design/`, self-contained team walkthrough `design/Witness-Relay-Design-Walkthrough.html` |
 
@@ -61,7 +61,7 @@
 - [x] `donation_attributions.method` = `launchgood_ref | csv_reconcile | webhook`; `status` = `pending | confirmed`
 - [x] Indexes: `share_links.code` unique; views/clicks by `(share_link_id, ts)` and `event_id`; `events(status)`
 - [x] RLS: public reads **approved events only**; writes via service role; aggregates exposed via `event_chain` / `event_lane_chain` views
-- [ ] Seed script run against the project (`scripts/seed.ts` written — needs a live Supabase)
+- [x] Seed script run against the project (`npx tsx scripts/seed.ts` — re-runnable, cleans its own sample rows first)
 - [ ] Typed DB client generated and committed
 
 **Done when:** seed loads cleanly and an anonymous write is rejected by RLS.
