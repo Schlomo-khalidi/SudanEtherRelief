@@ -102,6 +102,28 @@ export async function updateHeadline(formData: FormData) {
   redirect(`/admin?e=${eventId}&ok=headline`);
 }
 
+/* ---------------- ingest (Layer 2) ---------------- */
+
+export async function runIngestNow() {
+  await requireEditor();
+  const { runIngest } = await import("@/lib/ingest");
+  const summary = await runIngest();
+  const params = new URLSearchParams({
+    ingested: String(summary.newEvents.length),
+    attached: String(summary.attached),
+    candidates: String(summary.candidates),
+    fetched: String(summary.fetched),
+  });
+  if (summary.newEvents.length) {
+    params.set("newSlugs", summary.newEvents.map((n) => n.slug).join(",").slice(0, 200));
+  }
+  if (summary.errors.length) {
+    params.set("ingestErr", summary.errors.slice(0, 2).join(" | ").slice(0, 280));
+  }
+  revalidatePath("/admin");
+  redirect(`/admin?${params}`);
+}
+
 /* ---------------- donation reconciliation ---------------- */
 
 export async function reconcile(formData: FormData) {

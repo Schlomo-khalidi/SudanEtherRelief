@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { decide, updateHeadline } from "@/app/admin/actions";
+import { decide, runIngestNow, updateHeadline } from "@/app/admin/actions";
 import { AdminShell } from "@/app/admin/AdminShell";
+import { llmConfigured } from "@/lib/llm";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { money, shortDate, wireDate } from "@/lib/format";
 import type { DecisionRow, EventChainRow, EventRow, SourceRow, StoryPackRow } from "@/lib/types";
@@ -26,9 +27,29 @@ const STATUS_CHIP: Record<string, { cls: string; label: string }> = {
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ e?: string; ok?: string; err?: string }>;
+  searchParams: Promise<{
+    e?: string;
+    ok?: string;
+    err?: string;
+    ingested?: string;
+    attached?: string;
+    candidates?: string;
+    fetched?: string;
+    newSlugs?: string;
+    ingestErr?: string;
+  }>;
 }) {
-  const { e: selectedId, ok, err } = await searchParams;
+  const {
+    e: selectedId,
+    ok,
+    err,
+    ingested,
+    attached,
+    candidates,
+    fetched,
+    newSlugs,
+    ingestErr,
+  } = await searchParams;
   const db = supabaseAdmin();
 
   const { data: events } = await db
@@ -77,6 +98,25 @@ export default async function AdminPage({
   return (
     <AdminShell active="queue">
       <main className="wrap" style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 20, padding: "24px 0 40px", alignItems: "start" }}>
+        {/* ---------- ingest bar ---------- */}
+        <div style={{ gridColumn: "1 / -1", display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap", background: "#fff", border: "1px solid var(--line)", borderRadius: 12, padding: "12px 16px" }}>
+          <span className="chip chip-navy">{llmConfigured() ? "AI pipeline · live" : "AI pipeline · no key"}</span>
+          <span style={{ fontSize: 12.5, color: "var(--ink-2)" }}>
+            Wires + field feeds polled every 30 min; drafts land here source-bound, awaiting your decision.
+          </span>
+          <form action={runIngestNow} style={{ marginLeft: "auto" }}>
+            <button className="btn btn-accent" type="submit">⟳ Run ingest now</button>
+          </form>
+          {ingested !== undefined ? (
+            <span className="chip chip-green">✓ {ingested} new event(s) · {attached} source(s) attached · {candidates} candidates from {fetched} items</span>
+          ) : null}
+          {newSlugs ? <span className="mono" style={{ fontSize: 10, color: "var(--ink-3)" }}>{newSlugs}</span> : null}
+          {ingestErr ? (
+            <span className="chip chip-amber" style={{ maxWidth: 420, overflow: "hidden", textOverflow: "ellipsis" }} title={ingestErr}>
+              ⚠ {ingestErr}
+            </span>
+          ) : null}
+        </div>
         {/* ---------- queue ---------- */}
         <div className="card" style={{ overflow: "hidden" }}>
           <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--line)", background: "#fbf8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
