@@ -18,7 +18,8 @@
 | **L1 Data core** | ✅ **Live** — Supabase wired, seeded (4 lanes, 5 relayers, 3 events), RLS verified both ways. |
 | **L2 Ingest/AI** | ⬜ Needs an LLM API key (any one: OpenAI / Gemini / etc.). |
 | **L3 Public product** | ✅ **Live on dev** — feed with real aggregates, event pages (claims + source pills + approval line), chain board, OG card generator, `/r/[code]` view tracking (verified counting), Give-click route ready for the donation URL. |
-| **L4 Newsroom** · **L5 Relay hub UI** | ⬜ Next builds. L5's tracking plumbing was pulled forward into L3 (already live). |
+| **L4 Newsroom** | ✅ **Live** — password gate (editor: Gasser), review queue with risk flags, approve/edit/pause/reject writing the decision log, publishing checklist, CSV reconciliation importer. **Verified end-to-end**: approved the Khartoum draft in the UI → it published; imported a $25 donation via CSV → confirmed on the public chain. |
+| **L5 Relay hub UI** | 🟡 Tracking plumbing live (pulled into L3); kits/dashboard UI remain. ⬜ Run `supabase/migrations/0002_chain_views_approved.sql` in the SQL editor (draft-visibility hardening). |
 | **Design** | ✅ Final — in `design/` |
 
 **Live demo path (works right now):** `/` feed → `/event/zamzam-famine-confirmed` → `/r/ZA2GLP` logs a view and redirects with attribution. Chain numbers on the event page move in real time.
