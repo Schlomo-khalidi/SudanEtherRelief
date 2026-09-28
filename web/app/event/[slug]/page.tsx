@@ -63,6 +63,16 @@ export default async function EventPage({
           </div>
         </div>
 
+        {detail.photo ? (
+          <figure className="event-photo">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={detail.photo.storage_path} alt={detail.photo.caption} />
+            <span className="badge">Ethar field asset</span>
+            <span className="credit">Credit: {detail.photo.credit}</span>
+            <figcaption className="cap">{detail.photo.caption} — no AI-invented imagery, per policy.</figcaption>
+          </figure>
+        ) : null}
+
         <div className="layout">
           <div className="prose">
             <section>

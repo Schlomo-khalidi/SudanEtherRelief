@@ -98,6 +98,7 @@ export type EventDetail = {
   approval: { actor: string; at: string } | null;
   chain: EventChainRow | null;
   lanes: LaneChainRow[];
+  photo: { storage_path: string; caption: string; credit: string } | null;
 };
 
 export async function getEventDetail(slug: string): Promise<EventDetail | null> {
@@ -112,7 +113,7 @@ export async function getEventDetail(slug: string): Promise<EventDetail | null> 
   if (!event) return null;
   const e = event as EventRow;
 
-  const [sourcesRes, packsRes, chainRes, lanesRes, decisionsRes] = await Promise.all([
+  const [sourcesRes, packsRes, chainRes, lanesRes, decisionsRes, photoRes] = await Promise.all([
     anon.from("sources").select("*").eq("event_id", e.id).order("published_at", { ascending: false }),
     anon.from("story_packs").select("*").eq("event_id", e.id).eq("status", "current").maybeSingle(),
     anon.from("event_chain").select("*").eq("event_id", e.id).maybeSingle(),
@@ -124,7 +125,10 @@ export async function getEventDetail(slug: string): Promise<EventDetail | null> 
       .eq("action", "approve")
       .order("created_at", { ascending: false })
       .limit(1),
+    anon.from("assets").select("storage_path, meta").eq("event_id", e.id).eq("kind", "feed").maybeSingle(),
   ]);
+
+  const photoRow = (photoRes.data ?? null) as { storage_path: string; meta: { caption?: string; credit?: string } } | null;
 
   return {
     event: e,
@@ -136,6 +140,13 @@ export async function getEventDetail(slug: string): Promise<EventDetail | null> 
     })(),
     chain: (chainRes.data ?? null) as EventChainRow | null,
     lanes: (lanesRes.data ?? []) as LaneChainRow[],
+    photo: photoRow
+      ? {
+          storage_path: photoRow.storage_path,
+          caption: photoRow.meta?.caption ?? "Ethar Relief field photo",
+          credit: photoRow.meta?.credit ?? "Ethar Relief",
+        }
+      : null,
   };
 }
 
