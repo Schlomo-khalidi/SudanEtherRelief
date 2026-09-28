@@ -4,7 +4,22 @@
 
 **Submission:** product link + 30–60s highlight video, due **Friday Sept 25, 5:00 PM ET** at habibi.tech/brandathon. No pitch deck.
 
+**Repo:** [github.com/Schlomo-khalidi/SudanEtherRelief](https://github.com/Schlomo-khalidi/SudanEtherRelief) — branch `main`, pushed over SSH. (Note: HTTPS pushes of large payloads 408 on this connection — always push via SSH.)
+
 **How to use this file:** work top-to-bottom. Each layer lists what to *use*, the *build* tasks (check them off as you go), and a *done-when* gate — do not start the next layer until the gate passes. Layers are dependency-ordered; Track B runs in parallel from day 1.
+
+---
+
+## Where we are now
+
+| Layer | State |
+|---|---|
+| **L0 Foundations** | ✅ Scaffolded & building clean — Next 16 + TS in `web/`, design system ported, `/api/health` with DB probe, env template. Pushed to GitHub. ⬜ Vercel project + Sentry still open. |
+| **L1 Data core** | 🟡 Code done — `supabase/migrations/0001_init.sql` (12 tables, RLS, `event_chain` views) + `web/scripts/seed.ts` written. ⬜ Needs a live Supabase project: run migration → fill `.env.local` → seed. |
+| **L2 Ingest/AI** · **L3 Public product** | ⬜ Next up |
+| **Design** | ✅ Final — 6 views as HTML + 2× renders in `design/`, self-contained team walkthrough `design/Witness-Relay-Design-Walkthrough.html` |
+
+**Immediate next actions (in order):** ① create Supabase project → run migration → seed → verify `/api/health` says `db: ok` · ② Vercel project wired to the repo (deploy later is fine) · ③ then build L2 (ingest + AI drafting) and L3 (feed + event pages) in parallel with relayer recruitment.
 
 ---
 
@@ -27,7 +42,8 @@
 **Goal:** an empty but deployed, branded app that auto-deploys on push.
 **Use:** Next.js 15 (App Router, TypeScript strict) · Vercel · GitHub · Supabase project · Sentry · design tokens from `witness-relay-design/theme.css`.
 
-- [ ] Create GitHub repo + Vercel project; auto-deploy from `main`
+- [x] GitHub repo live: [SudanEtherRelief](https://github.com/Schlomo-khalidi/SudanEtherRelief) (`main`, auto-push ready)
+- [ ] Vercel project connected to the repo; auto-deploy from `main`
 - [x] Scaffold Next.js app; port design system (`web/app/globals.css` tokens + `components/ui.tsx`: Button, Chip, Stamp, Card, StatTile)
 - [ ] Create Supabase project; set env vars in Vercel + local `.env` (`.env.example` ready)
 - [x] `/api/health` route returns `{ ok: true }` + DB connectivity probe
