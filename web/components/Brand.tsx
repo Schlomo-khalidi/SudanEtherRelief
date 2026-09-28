@@ -1,3 +1,7 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 export function BrandSeal({ size = 34 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 34 34" aria-hidden="true">
@@ -34,18 +38,34 @@ export function BrandMark() {
   );
 }
 
+const NAV_ITEMS = [
+  {
+    href: "/",
+    label: "Live feed",
+    match: (p: string) => p === "/" || p.startsWith("/event"),
+  },
+  { href: "/relay", label: "Relay hub", match: (p: string) => p.startsWith("/relay") },
+  { href: "/impact", label: "Impact", match: (p: string) => p.startsWith("/impact") },
+  {
+    href: "/how-it-works",
+    label: "How it works",
+    match: (p: string) => p.startsWith("/how-it-works"),
+  },
+];
+
 export function TopBar() {
+  const pathname = usePathname();
+
   return (
     <header className="topbar">
       <div className="wrap topbar-inner">
         <BrandMark />
         <nav className="topnav">
-          <a className="active" href="/">
-            Live feed
-          </a>
-          <a href="/relay">Relay hub</a>
-          <a href="/impact">Impact</a>
-          <a href="/how-it-works">How it works</a>
+          {NAV_ITEMS.map((item) => (
+            <a key={item.href} className={item.match(pathname ?? "/") ? "active" : ""} href={item.href}>
+              {item.label}
+            </a>
+          ))}
         </nav>
         <div className="topbar-right">
           <a className="btn btn-accent" href="/relay">
