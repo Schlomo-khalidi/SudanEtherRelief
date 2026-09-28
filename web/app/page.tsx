@@ -1,41 +1,79 @@
+import Link from "next/link";
 import { TopBar } from "@/components/Brand";
-import { Card, Chip, Dateline, SectionLabel, Stamp, StatTile } from "@/components/ui";
+import { EventCard } from "@/components/EventCard";
+import { getFeedData } from "@/lib/queries";
+import { money, num } from "@/lib/format";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function FeedPage() {
+  const { cards, global } = await getFeedData();
+
   return (
     <>
-      <TopBar />
-      <main className="wrap" style={{ paddingTop: 48, paddingBottom: 60 }}>
-        <div className="dateline">Layer 0 scaffold · foundations live</div>
-        <h1 className="serif" style={{ fontSize: 42, fontWeight: 600, letterSpacing: "-.015em", margin: "14px 0 10px", maxWidth: 760, lineHeight: 1.12 }}>
-          Witness Relay is being built here.
-        </h1>
-        <p style={{ color: "var(--ink-2)", maxWidth: 640, marginBottom: 32 }}>
-          Verified Sudan &amp; East Africa news, human-approved, relayed through
-          communities with attributed donations to Ethar Relief. The live feed
-          lands in Layer 3 — the design system and data contract are already in.
-        </p>
+      <div className="ticker">
+        Live — {global.events} approved event{global.events === 1 ? "" : "s"} · every link attributed, every claim sourced
+      </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 32 }}>
-          <StatTile num="0" label="Approved events (seed pending)" />
-          <StatTile num="0" label="Relayers onboarded" />
-          <StatTile num="$0" label="Confirmed donations" tone="green" />
+      <TopBar />
+
+      <div className="livebar">
+        <div className="wrap livebar-inner">
+          <div className="live-item"><b>{String(global.events).padStart(2, "0")}</b><span>Approved events live</span></div>
+          <div className="live-item"><b>{num(global.relayers)}</b><span>Relayers onboarded</span></div>
+          <div className="live-item"><b>{num(global.views)}</b><span>Tracked views</span></div>
+          <div className="live-item"><b>{num(global.clicks)}</b><span>Give clicks</span></div>
+          <div className="live-item"><b><em>{money(global.confirmed)}</em></b><span>Confirmed donations</span></div>
+          <div className="live-item"><b>{num(global.pending)}</b><span>Pending reconciliation</span></div>
+        </div>
+      </div>
+
+      <main className="wrap">
+        <div className="mission">
+          <h1>
+            Verified Sudan news, <em>human-approved</em>, handed to the communities that will carry it.
+          </h1>
+          <p>
+            Every event below is drawn from cited sources and approved by an editor before you
+            ever see it. Relay it, and your link shows exactly who saw it and what it raised.
+          </p>
         </div>
 
-        <Card>
-          <SectionLabel>Design system check</SectionLabel>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", marginBottom: 18 }}>
-            <Stamp>Witness verified</Stamp>
-            <Chip tone="navy">3 sources</Chip>
-            <Chip tone="green">Editor-approved</Chip>
-            <Chip tone="amber">Field report</Chip>
-            <Chip>Editor-approved · A. Osman · 12:02 UTC</Chip>
+        <div className="filters">
+          <span className="filter on">All</span>
+          <span className="filter">Sudan</span>
+          <span className="filter">East Africa</span>
+          <span className="filter">Famine &amp; food</span>
+          <span className="filter">Health</span>
+          <span className="filter">Displacement</span>
+          <span className="count">Showing {cards.length} approved event{cards.length === 1 ? "" : "s"}</span>
+        </div>
+
+        <div className="feed">
+          {cards.length === 0 ? (
+            <div className="card card-pad" style={{ color: "var(--ink-2)" }}>
+              No approved events yet — the newsroom is reviewing the first drafts.
+            </div>
+          ) : (
+            cards.map((data) => <EventCard key={data.event.id} data={data} />)
+          )}
+        </div>
+
+        <div className="band">
+          <div className="band-inner">
+            <h3>Don&apos;t just read it. Carry it.</h3>
+            <p>
+              Pick a lane — your mosque, campus, creators&apos; circle, diaspora group — and get a
+              channel-ready kit with your own tracked link. You&apos;ll see exactly who your share reached.
+            </p>
+            <Link className="btn btn-accent btn-lg" href="/relay">Open the relay hub →</Link>
           </div>
-          <Dateline>Zamzam Camp, North Darfur — 24 Sept 2026 · 14:20 UTC</Dateline>
-          <p className="serif" style={{ fontSize: 24, fontWeight: 600, lineHeight: 1.25, marginTop: 8 }}>
-            Famine confirmed in Zamzam displacement camp as access remains blocked
-          </p>
-        </Card>
+        </div>
+
+        <div className="foot">
+          <span>Witness Relay — a visibility engine for Sudan &amp; East Africa. News in. Donations out.</span>
+          <span className="sample-tag">◐ Prototype · seeded sample data</span>
+        </div>
       </main>
     </>
   );

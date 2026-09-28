@@ -42,6 +42,18 @@ export function StatTile({
   );
 }
 
-export function Card({ children, pad = true }: { children: ReactNode; pad?: boolean }) {
-  return <div className={`card${pad ? " card-pad" : ""}`}>{children}</div>;
+export function Card({
+  children,
+  pad = true,
+  style,
+}: {
+  children: ReactNode;
+  pad?: boolean;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <div className={`card${pad ? " card-pad" : ""}`} style={style}>
+      {children}
+    </div>
+  );
 }

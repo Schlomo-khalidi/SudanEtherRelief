@@ -160,7 +160,7 @@ async function main() {
     if (ev.status === "approved") {
       for (let i = 0; i < 3; i++) {
         await db.from("share_links").insert({
-          code: `${ev.slug.slice(0, 2).toUpperCase()}${Math.random().toString(36).slice(2, 6)}`,
+          code: `${ev.slug.slice(0, 2).toUpperCase()}${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
           event_id: eventId,
           lane_id: laneIds[i],
           relayer_id: relayerIds[i],
