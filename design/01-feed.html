@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Witness Relay — Live Feed</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+  .ticker { background: var(--accent); color: #fff; font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: .1em; text-transform: uppercase; padding: 7px 0; text-align: center; }
+  .livebar { background: var(--ink); color: #fff; border-top: 1px solid rgba(255,255,255,.08); }
+  .livebar-inner { display: flex; justify-content: space-between; padding: 14px 0; }
+  .live-item { display: flex; flex-direction: column; gap: 2px; }
+  .live-item b { font-family: 'Fraunces', Georgia, serif; font-size: 22px; font-weight: 700; color: #fff; }
+  .live-item span { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: .14em;
+    text-transform: uppercase; color: #9d96c9; }
+  .live-item b em { font-style: normal; color: #ff8a75; }
+
+  .mission { display: flex; align-items: baseline; justify-content: space-between; gap: 40px; padding: 34px 0 8px; }
+  .mission h1 { font-size: 30px; font-weight: 600; line-height: 1.2; max-width: 640px; }
+  .mission h1 em { font-style: italic; color: var(--accent-dark); }
+  .mission p { max-width: 330px; color: var(--ink-2); font-size: 13.5px; }
+
+  .filters { display: flex; gap: 10px; padding: 18px 0 22px; align-items: center; }
+  .filter { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    border: 1px solid var(--line); background: #fff; color: var(--ink-2); border-radius: 999px; padding: 7px 14px; }
+  .filter.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .filters .count { margin-left: auto; color: var(--ink-3); font-size: 12px; }
+
+  .feed { display: flex; flex-direction: column; gap: 18px; padding-bottom: 20px; }
+  .event-card { display: grid; grid-template-columns: 1fr 300px; gap: 0; overflow: hidden; }
+  .event-main { padding: 26px 28px 22px; }
+  .event-chips { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .event-main h2 { font-size: 24px; font-weight: 600; line-height: 1.25; margin-bottom: 8px; letter-spacing: -.01em; }
+  .event-main h2 a { color: inherit; text-decoration: none; }
+  .event-main h2 a:hover { color: var(--accent-dark); }
+  .event-sum { color: var(--ink-2); font-size: 14px; max-width: 620px; }
+  .event-foot { display: flex; align-items: center; gap: 22px; margin-top: 18px; }
+  .mstat { display: flex; align-items: baseline; gap: 7px; }
+  .mstat b { font-size: 14.5px; font-weight: 700; }
+  .mstat span { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-3); }
+  .mstat.ok b { color: var(--green); }
+  .event-foot .btn { margin-left: auto; }
+
+  .event-side { border-left: 1px solid var(--line); background: #fbf8f0; padding: 26px 24px;
+    display: flex; flex-direction: column; gap: 14px; }
+  .side-label { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--ink-3); }
+  .src-row { display: flex; gap: 10px; align-items: flex-start; }
+  .src-n { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--ink-3);
+    border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; background: #fff; }
+  .src-row div b { font-size: 12.5px; font-weight: 600; display: block; }
+  .src-row div span { font-size: 11.5px; color: var(--ink-3); }
+
+  .band { background: var(--ink); color: #fff; margin-top: 26px; }
+  .band-inner { display: flex; align-items: center; gap: 30px; padding: 30px 0; }
+  .band h3 { font-family: 'Fraunces', Georgia, serif; font-size: 22px; font-weight: 600; max-width: 420px; line-height: 1.3; }
+  .band p { color: #b9b3dd; font-size: 13px; max-width: 380px; }
+  .band .btn { margin-left: auto; flex-shrink: 0; }
+  .foot { display: flex; justify-content: space-between; align-items: center; padding: 22px 0 30px; color: var(--ink-3); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="ticker">LIVE — 3 APPROVED EVENTS · LAST INGEST 6 MIN AGO · EVERY LINK ATTRIBUTED, EVERY CLAIM SOURCED</div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="#">
+      <svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="15.5" fill="none" stroke="#ff8a75" stroke-width="2"/><circle cx="17" cy="17" r="10.5" fill="none" stroke="#ff8a75" stroke-width="1" stroke-dasharray="3 2.4"/><path d="M12 17.5l3.4 3.4L22.5 13.6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="brand-name">Witness <em>Relay</em></span>
+    </a>
+    <nav class="topnav">
+      <a class="active" href="#">Live feed</a>
+      <a href="#">Relay hub</a>
+      <a href="#">Impact</a>
+      <a href="#">How it works</a>
+    </nav>
+    <div class="topbar-right">
+      <a class="btn btn-ghost" href="#">Sign in</a>
+      <a class="btn btn-accent" href="#">Relay this news</a>
+    </div>
+  </div>
+</header>
+
+<div class="livebar">
+  <div class="wrap livebar-inner">
+    <div class="live-item"><b>03</b><span>Approved events live</span></div>
+    <div class="live-item"><b>47</b><span>Active relayers</span></div>
+    <div class="live-item"><b>41,208</b><span>Views this week</span></div>
+    <div class="live-item"><b>1,962</b><span>Tracked clicks</span></div>
+    <div class="live-item"><b><em>$8,940</em></b><span>Confirmed donations</span></div>
+    <div class="live-item"><b>6</b><span>Donations pending reconciliation</span></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="mission">
+    <h1>Verified Sudan news, <em>human-approved</em>, handed to the communities that will carry it.</h1>
+    <p>Every event below is drawn from cited sources and approved by an editor before you ever see it. Relay it, and your link shows exactly who saw it and what it raised.</p>
+  </div>
+
+  <div class="filters">
+    <span class="filter on">All</span>
+    <span class="filter">Sudan</span>
+    <span class="filter">East Africa</span>
+    <span class="filter">Famine &amp; food</span>
+    <span class="filter">Health</span>
+    <span class="filter">Displacement</span>
+    <span class="count">Showing 3 of 12 approved events this week</span>
+  </div>
+
+  <div class="feed">
+
+    <!-- lead event -->
+    <article class="card event-card">
+      <div class="event-main">
+        <div class="event-chips">
+          <span class="stamp">Witness verified</span>
+          <span class="chip chip-navy">3 sources</span>
+          <span class="chip">Editor-approved · A. Osman · 12:02 UTC</span>
+        </div>
+        <div class="dateline" style="margin:10px 0 6px;">Zamzam Camp, North Darfur — 24 Sept 2026 · 14:20 UTC</div>
+        <h2><a href="#">Famine confirmed in Zamzam displacement camp as access remains blocked</a></h2>
+        <p class="event-sum">The IPC formally classified famine in the camp, the first such determination in Sudan since 2017. Aid convoys have been unable to enter since spring; field teams report children admitted for severe malnutrition. Ethar Relief teams are staging emergency food parcels at the nearest reachable corridor.</p>
+        <div class="event-foot">
+          <div class="mstat"><b>9,412</b><span>Views</span></div>
+          <div class="mstat"><b>1,187</b><span>Clicks</span></div>
+          <div class="mstat ok"><b>$2,340</b><span>Confirmed · 34 gifts</span></div>
+          <a class="btn btn-accent" href="#">Relay this →</a>
+        </div>
+      </div>
+      <aside class="event-side">
+        <span class="side-label">Sources behind this card</span>
+        <div class="src-row"><span class="src-n">S1</span><div><b>Radio Dabanga</b><span>23 Sept · 18:40 UTC</span></div></div>
+        <div class="src-row"><span class="src-n">S2</span><div><b>IPC / UN OCHA</b><span>24 Sept · 09:05 UTC</span></div></div>
+        <div class="src-row"><span class="src-n">S3</span><div><b>Sudan Tribune</b><span>24 Sept · 11:12 UTC</span></div></div>
+        <span class="side-label" style="margin-top:4px;">Top lane</span>
+        <div class="src-row"><span class="src-n">↳</span><div><b>Diaspora — Minneapolis</b><span>2,981 views this week</span></div></div>
+      </aside>
+    </article>
+
+    <!-- event 2 -->
+    <article class="card event-card">
+      <div class="event-main">
+        <div class="event-chips">
+          <span class="stamp">Witness verified</span>
+          <span class="chip chip-navy">4 sources</span>
+          <span class="chip">Editor-approved · R. Idris · 08:44 UTC</span>
+        </div>
+        <div class="dateline" style="margin:10px 0 6px;">El Fasher, North Darfur — 26 Sept 2026 · 08:44 UTC</div>
+        <h2><a href="#">El Fasher's last functioning hospital overflows as siege enters new phase</a></h2>
+        <p class="event-sum">Local doctors report pediatric wards at three times capacity and two weeks of essential supplies remaining. Water trucking has stopped in three quartiers. Ethar Relief is supporting a mobile clinic route on the western approach.</p>
+        <div class="event-foot">
+          <div class="mstat"><b>5,088</b><span>Views</span></div>
+          <div class="mstat"><b>642</b><span>Clicks</span></div>
+          <div class="mstat ok"><b>$1,275</b><span>Confirmed · 19 gifts</span></div>
+          <a class="btn btn-accent" href="#">Relay this →</a>
+        </div>
+      </div>
+      <aside class="event-side">
+        <span class="side-label">Sources behind this card</span>
+        <div class="src-row"><span class="src-n">S1</span><div><b>Sudan Doctors Union</b><span>25 Sept · 21:30 UTC</span></div></div>
+        <div class="src-row"><span class="src-n">S2</span><div><b>Radio Dabanga</b><span>26 Sept · 06:10 UTC</span></div></div>
+        <div class="src-row"><span class="src-n">S3</span><div><b>UN OCHA flash update</b><span>26 Sept · 07:52 UTC</span></div></div>
+        <span class="side-label" style="margin-top:4px;">Top lane</span>
+        <div class="src-row"><span class="src-n">↳</span><div><b>Campus — City Univ MSA</b><span>1,730 views this week</span></div></div>
+      </aside>
+    </article>
+
+    <!-- event 3 -->
+    <article class="card event-card">
+      <div class="event-main">
+        <div class="event-chips">
+          <span class="stamp">Witness verified</span>
+          <span class="chip chip-navy">2 sources</span>
+          <span class="chip chip-amber">Field report — Ethar staff</span>
+        </div>
+        <div class="dateline" style="margin:10px 0 6px;">Khartoum State — 27 Sept 2026 · 16:05 UTC</div>
+        <h2><a href="#">Cholera treatment points overwhelmed as outbreak spreads through Khartoum state</a></h2>
+        <p class="event-sum">Health ministry figures show new cases doubling week over week in three localities. Ethar field staff report oral rehydration stocks at three of five supported points running below a five-day supply.</p>
+        <div class="event-foot">
+          <div class="mstat"><b>2,377</b><span>Views</span></div>
+          <div class="mstat"><b>133</b><span>Clicks</span></div>
+          <div class="mstat ok"><b>$—</b><span>Relay opened 6h ago</span></div>
+          <a class="btn btn-accent" href="#">Relay this →</a>
+        </div>
+      </div>
+      <aside class="event-side">
+        <span class="side-label">Sources behind this card</span>
+        <div class="src-row"><span class="src-n">S1</span><div><b>Sudan Tribune</b><span>27 Sept · 12:20 UTC</span></div></div>
+        <div class="src-row"><span class="src-n">S2</span><div><b>Ethar field memo</b><span>27 Sept · 14:50 UTC</span></div></div>
+        <span class="side-label" style="margin-top:4px;">Note</span>
+        <div class="src-row"><span class="src-n">↳</span><div><b>Newest relay</b><span>Chain starts now — be first to carry it</span></div></div>
+      </aside>
+    </article>
+  </div>
+
+  <div class="band">
+    <div class="wrap band-inner" style="padding-left:0;padding-right:0;">
+      <h3>Don't just read it. Carry it.</h3>
+      <p>Pick a lane — your mosque, campus, creators' circle, diaspora group — and get a channel-ready kit with your own tracked link. You'll see exactly who your share reached.</p>
+      <a class="btn btn-accent btn-lg" href="#">Open the relay hub →</a>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>Witness Relay — a visibility engine for Sudan &amp; East Africa. News in. Donations out.</span>
+    <span class="sample-tag">◐ Prototype mockup · sample data</span>
+  </div>
+</main>
+
+</body>
+</html>

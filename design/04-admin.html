@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Witness Relay — Editorial Review</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+  body { background: #f2eee2; }
+  .admin-top { background: var(--ink); color: #fff; }
+  .admin-top .inner { display: flex; align-items: center; gap: 16px; height: 58px; }
+  .admin-top .tag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+    background: var(--accent); border-radius: 6px; padding: 4px 9px; }
+  .admin-top nav { display: flex; gap: 20px; margin-left: 18px; }
+  .admin-top nav a { color: #cfc9ec; font-size: 13px; text-decoration: none; }
+  .admin-top nav a.on { color: #fff; font-weight: 600; }
+  .admin-top .right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+
+  .console { display: grid; grid-template-columns: 360px 1fr; gap: 20px; padding: 24px 0 40px; align-items: start; }
+
+  .queue { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .queue-head { padding: 14px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; background: #fbf8f0; }
+  .queue-head b { font-size: 13.5px; }
+  .q-item { padding: 13px 16px; border-bottom: 1px solid #f0ead9; cursor: pointer; }
+  .q-item:hover { background: #fbf8f0; }
+  .q-item.on { background: var(--navy-soft); border-left: 3px solid var(--ink); padding-left: 13px; }
+  .q-item .t { font-size: 13px; font-weight: 600; line-height: 1.35; }
+  .q-item .m { display: flex; gap: 6px; margin-top: 7px; flex-wrap: wrap; align-items: center; }
+  .q-item .meta { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: var(--ink-3); margin-top: 6px; letter-spacing: .04em; }
+
+  .review { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .rv-head { padding: 18px 24px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 14px; background: #fbf8f0; }
+  .rv-head h2 { font-family: 'Fraunces', Georgia, serif; font-size: 19px; font-weight: 600; }
+  .rv-head .id { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-3); letter-spacing: .08em; }
+  .rv-body { display: grid; grid-template-columns: 1fr 250px; }
+  .rv-main { padding: 22px 24px; border-right: 1px solid var(--line); }
+  .rv-side { padding: 20px; background: #fbf8f0; display: flex; flex-direction: column; gap: 16px; }
+
+  .f-label { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 7px; }
+  .f-input { width: 100%; border: 1px solid var(--line); border-radius: 9px; padding: 11px 13px; font-size: 14.5px;
+    font-family: 'Fraunces', Georgia, serif; font-weight: 600; background: #fff; color: var(--ink); }
+  .claim-edit { border: 1px solid var(--line); border-radius: 10px; padding: 13px 15px; margin-bottom: 10px; background: #fff; }
+  .claim-edit p { font-size: 14px; }
+  .claim-edit .srcs { display: flex; gap: 6px; margin-top: 8px; align-items: center; }
+  .src-pill { display: inline-flex; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; font-weight: 600;
+    color: var(--ink-2); background: var(--navy-soft); border-radius: 5px; padding: 3px 8px; }
+  .src-pill.warn { background: var(--amber-soft); color: var(--amber); }
+  .claim-edit .addsrc { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: var(--ink-3); border: 1px dashed var(--line);
+    border-radius: 5px; padding: 3px 8px; }
+  .ai-note { display: flex; gap: 9px; background: var(--navy-soft); border: 1px solid #d8d5ef; border-radius: 9px;
+    padding: 10px 13px; font-size: 12px; color: var(--ink-2); margin: 12px 0 16px; }
+  .ai-note b { color: var(--ink); }
+
+  .asset { display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: #fff; }
+  .asset .thumb { width: 92px; height: 62px; border-radius: 8px; background: linear-gradient(135deg, #4a4370, #221c44);
+    position: relative; flex-shrink: 0; }
+  .asset .thumb .badge { position: absolute; left: 6px; bottom: 6px; background: rgba(30,127,79,.92); color: #fff;
+    font-family: 'IBM Plex Mono', monospace; font-size: 7px; letter-spacing: .08em; text-transform: uppercase; border-radius: 4px; padding: 2px 5px; }
+  .asset b { font-size: 12.5px; display: block; }
+  .asset span { font-size: 11.5px; color: var(--ink-2); }
+  .asset .cred { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--ink-3); margin-top: 4px; letter-spacing: .04em; }
+
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+  .actions .btn { justify-content: center; }
+
+  .log { border-left: 2px solid var(--line); margin-left: 6px; padding-left: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .log-item { position: relative; }
+  .log-item::before { content: ""; position: absolute; left: -22px; top: 4px; width: 10px; height: 10px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--ink-3); }
+  .log-item.ai::before { border-color: var(--ink); background: var(--ink); }
+  .log-item.warn::before { border-color: var(--amber); }
+  .log-item .lt { font-size: 12px; font-weight: 600; }
+  .log-item .lm { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: var(--ink-3); margin-top: 2px; }
+  .log-item p { font-size: 11.5px; color: var(--ink-2); margin-top: 3px; }
+
+  .recon { border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 14px 16px; }
+  .recon .big { display: flex; align-items: baseline; gap: 8px; margin: 4px 0 10px; }
+  .recon .big b { font-family: 'Fraunces', Georgia, serif; font-size: 26px; color: var(--amber); }
+  .recon .big span { font-size: 11px; color: var(--ink-3); }
+  .foot { color: var(--ink-3); font-size: 12px; padding-bottom: 30px; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<header class="admin-top">
+  <div class="wrap inner">
+    <a class="brand" href="#" style="gap:10px;">
+      <svg width="26" height="26" viewBox="0 0 34 34"><circle cx="17" cy="17" r="15.5" fill="none" stroke="#ff8a75" stroke-width="2.4"/><path d="M12 17.5l3.4 3.4L22.5 13.6" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="brand-name" style="font-size:16px;">Witness <em>Relay</em></span>
+    </a>
+    <span class="tag">Newsroom</span>
+    <nav>
+      <a class="on" href="#">Review queue</a>
+      <a href="#">Events</a>
+      <a href="#">Lanes &amp; relayers</a>
+      <a href="#">Attributions</a>
+    </nav>
+    <div class="right"><span class="mono" style="font-size:10.5px;color:#9d96c9;">A. OSMAN · EDITOR</span></div>
+  </div>
+</header>
+
+<main class="wrap console">
+
+  <!-- queue -->
+  <div class="queue">
+    <div class="queue-head"><b>Review queue</b><span class="chip chip-amber">4 awaiting</span></div>
+    <div class="q-item on">
+      <div class="t">Famine confirmed in Zamzam camp as access remains blocked</div>
+      <div class="m"><span class="chip chip-navy">AI draft</span><span class="chip">5 sources</span></div>
+      <div class="meta">EV-0142 · drafted 09:12 · revised 10:40</div>
+    </div>
+    <div class="q-item">
+      <div class="t">El Fasher's last functioning hospital overflows as siege enters new phase</div>
+      <div class="m"><span class="chip chip-navy">AI draft</span><span class="chip">4 sources</span></div>
+      <div class="meta">EV-0143 · drafted 10:58</div>
+    </div>
+    <div class="q-item">
+      <div class="t">Cholera treatment points overwhelmed across Khartoum state</div>
+      <div class="m"><span class="chip chip-navy">AI draft</span><span class="chip chip-amber">imagery pending</span></div>
+      <div class="meta">EV-0144 · drafted 11:20</div>
+    </div>
+    <div class="q-item">
+      <div class="t">New arrivals cross into Chad as Adré camps swell past capacity</div>
+      <div class="m"><span class="chip chip-navy">AI draft</span><span class="chip chip-amber">single-source claim</span></div>
+      <div class="meta">EV-0145 · drafted 11:47</div>
+    </div>
+    <div class="q-item" style="opacity:.62;">
+      <div class="t">Viral video claims strike on market in Omdurman</div>
+      <div class="m"><span class="chip chip-red">Rejected</span><span class="chip">video unverified</span></div>
+      <div class="meta">EV-0141 · rejected by A. Osman · 08:15</div>
+    </div>
+    <div class="q-item" style="opacity:.62;">
+      <div class="t">El Fasher hospital overflow — first report</div>
+      <div class="m"><span class="chip chip-green">Published</span><span class="chip">live</span></div>
+      <div class="meta">EV-0140 · published 26 Sept</div>
+    </div>
+  </div>
+
+  <!-- review detail -->
+  <div class="review">
+    <div class="rv-head">
+      <span class="stamp" style="transform:none;">Draft v3</span>
+      <h2>Zamzam famine — story pack review</h2>
+      <span class="id">EV-0142 · ZAMZAM-FAMINE</span>
+    </div>
+
+    <div class="rv-body">
+      <div class="rv-main">
+        <div class="f-label">Headline (source-backed)</div>
+        <input class="f-input" value="Famine confirmed in Zamzam displacement camp as access remains blocked">
+
+        <div class="ai-note">⚙ <span><b>AI draft, grounded:</b> every sentence below must keep at least one source pill. Stripping a pill requires an editor note. Confidence 0.92 · clustering: 5 sources, 2 duplicates merged.</span></div>
+
+        <div class="f-label">Claims</div>
+        <div class="claim-edit">
+          <p>The IPC formally confirmed famine in Zamzam camp — the first famine determination in Sudan since 2017.</p>
+          <div class="srcs"><span class="src-pill">S1 · IPC / OCHA</span><span class="src-pill">S3 · Sudan Tribune</span></div>
+        </div>
+        <div class="claim-edit">
+          <p>Field teams report more than 300 children admitted for severe malnutrition this week.</p>
+          <div class="srcs"><span class="src-pill">S2 · Radio Dabanga</span><span class="addsrc">+ attach source</span></div>
+        </div>
+        <div class="claim-edit">
+          <p>The most recent aid convoy attempt was turned back on 21 September.</p>
+          <div class="srcs"><span class="src-pill warn">S4 · needs editor confirm</span><span class="addsrc">+ attach source</span></div>
+        </div>
+
+        <div class="f-label" style="margin-top:18px;">Donation ask (Ethar-approved copy)</div>
+        <div class="copybox" style="border:1px solid var(--line);background:#fbf8f0;border-radius:10px;padding:13px 15px;font-size:13.5px;">
+          <b>$40</b> — one emergency food parcel for a family of six for two weeks. Approved by Ethar programs team, 24 Sept. <span class="mono" style="font-size:9.5px;color:var(--ink-3);letter-spacing:.06em;">✓ LOCKED — edits require Ethar sign-off</span>
+        </div>
+
+        <div class="f-label" style="margin-top:18px;">Imagery</div>
+        <div class="asset">
+          <div class="thumb"><span class="badge">Field asset</span></div>
+          <div><b>Food parcel staging at corridor point</b><span>Ethar Relief field photography — no AI-generated imagery of affected people, per policy.</span><div class="cred">CREDIT: ETHAR RELIEF · 22 SEPT · USAGE CLEARED</div></div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:22px;">
+          <a class="btn btn-green btn-lg" href="#">✓ Approve &amp; publish</a>
+          <a class="btn btn-outline btn-lg" href="#">Request edit</a>
+          <a class="btn btn-outline btn-lg" href="#">Pause</a>
+          <a class="btn btn-danger btn-lg" href="#">Reject</a>
+        </div>
+      </div>
+
+      <aside class="rv-side">
+        <div>
+          <div class="f-label">Decision log</div>
+          <div class="log">
+            <div class="log-item ai"><div class="lt">AI draft v1 created</div><div class="lm">24 SEPT · 09:12 · 5 SOURCES CLUSTERED</div></div>
+            <div class="log-item warn"><div class="lt">Edit requested — A. Osman</div><div class="lm">24 SEPT · 10:04</div><p>"Convoy claim needs the date pinned to a source."</p></div>
+            <div class="log-item ai"><div class="lt">AI revision v3</div><div class="lm">24 SEPT · 10:40 · S4 ATTACHED</div></div>
+            <div class="log-item"><div class="lt">Ethar donation copy locked</div><div class="lm">24 SEPT · 11:30</div></div>
+            <div class="log-item"><div class="lt">Awaiting editorial decision</div><div class="lm">NOW</div></div>
+          </div>
+        </div>
+
+        <div class="recon">
+          <div class="f-label" style="margin-bottom:0;">Attributions awaiting confirmation</div>
+          <div class="big"><b>11</b><span>gifts across 4 events</span></div>
+          <div style="display:flex;gap:8px;">
+            <a class="btn btn-outline" href="#" style="font-size:12px;padding:7px 12px;">Import LaunchGood CSV</a>
+            <a class="btn btn-outline" href="#" style="font-size:12px;padding:7px 12px;">Webhook health</a>
+          </div>
+        </div>
+
+        <div class="card" style="padding:14px 16px;border-radius:12px;">
+          <div class="f-label">Publishing checklist</div>
+          <div style="display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:var(--ink-2);">
+            <span>✅ All claims carry sources</span>
+            <span>✅ Donation copy locked by Ethar</span>
+            <span>✅ Field imagery credited &amp; cleared</span>
+            <span>⬜ Arabic kit render (auto on approve)</span>
+            <span>⬜ Lane notifications (auto on approve)</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<div class="wrap foot">
+  <span>Witness Relay newsroom — nothing publishes without a human decision.</span>
+  <span class="sample-tag">◐ Prototype mockup · sample data</span>
+</div>
+
+</body>
+</html>

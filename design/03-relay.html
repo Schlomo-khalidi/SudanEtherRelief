@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Witness Relay — Relay Hub</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+  .hero { background: var(--ink); color: #fff; }
+  .hero-inner { padding: 40px 0 36px; display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: center; }
+  .hero h1 { font-family: 'Fraunces', Georgia, serif; font-size: 34px; font-weight: 600; line-height: 1.15; letter-spacing: -.01em; }
+  .hero h1 em { font-style: italic; color: #ff8a75; }
+  .hero p { color: #b9b3dd; font-size: 14.5px; max-width: 540px; margin-top: 12px; }
+  .hero-steps { display: flex; flex-direction: column; gap: 12px; }
+  .hero-step { display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px; padding: 12px 16px; }
+  .hero-step .n { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #ff8a75; border: 1px solid rgba(255,138,117,.4);
+    border-radius: 6px; padding: 3px 7px; }
+  .hero-step span { font-size: 13px; color: #e7e4f6; }
+
+  .step-label { display: flex; align-items: baseline; gap: 12px; margin: 34px 0 16px; }
+  .step-label .sn { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--accent-dark); }
+  .step-label h2 { font-family: 'Fraunces', Georgia, serif; font-size: 22px; font-weight: 600; }
+
+  .lanes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .lane { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; cursor: pointer; }
+  .lane.on { border: 2px solid var(--accent); padding: 17px; box-shadow: var(--shadow); }
+  .lane .ic { width: 38px; height: 38px; border-radius: 10px; background: var(--navy-soft); display: flex;
+    align-items: center; justify-content: center; font-size: 17px; margin-bottom: 12px; }
+  .lane.on .ic { background: var(--accent-soft); }
+  .lane b { font-size: 14.5px; display: block; }
+  .lane p { font-size: 12px; color: var(--ink-2); margin-top: 3px; line-height: 1.45; }
+  .lane .meta { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-3); margin-top: 12px; display: flex; justify-content: space-between; }
+  .lane .on-tag { color: var(--accent-dark); }
+
+  .kit { display: grid; grid-template-columns: 1.35fr .9fr; gap: 18px; }
+  .kit-main { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .kit-head { display: flex; align-items: center; gap: 14px; padding: 16px 22px; border-bottom: 1px solid var(--line); background: #fbf8f0; }
+  .kit-head b { font-size: 14px; }
+  .lang { margin-left: auto; display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .lang span { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; padding: 6px 12px; color: var(--ink-2); background: #fff; }
+  .lang span.on { background: var(--ink); color: #fff; }
+  .channels { display: flex; gap: 6px; padding: 14px 22px 0; }
+  .ch-tab { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .06em; padding: 8px 14px;
+    border-radius: 8px 8px 0 0; color: var(--ink-3); border: 1px solid transparent; border-bottom: 0; }
+  .ch-tab.on { background: #fff; border-color: var(--line); color: var(--ink); font-weight: 600; }
+  .ch-body { display: grid; grid-template-columns: 250px 1fr; gap: 22px; padding: 20px 22px 22px; border-top: 1px solid var(--line); }
+
+  /* whatsapp preview */
+  .phone { background: #0b141a; border-radius: 18px; padding: 10px; }
+  .phone .ph-head { display: flex; align-items: center; gap: 8px; background: #1f2c34; border-radius: 12px 12px 0 0; padding: 10px 12px; }
+  .phone .ph-head .av { width: 26px; height: 26px; border-radius: 50%; background: var(--navy-soft); }
+  .phone .ph-head b { color: #e9edef; font-size: 11.5px; display: block; }
+  .phone .ph-head span { color: #8696a0; font-size: 9px; }
+  .phone .ph-body { background: #0b141a; padding: 14px 10px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .bubble { background: #005c4b; color: #e9edef; border-radius: 10px 10px 10px 3px; padding: 8px 10px; max-width: 92%;
+    font-size: 11.5px; line-height: 1.45; align-self: flex-start; }
+  .bubble .og { background: #0b3d34; border-radius: 8px; overflow: hidden; margin-bottom: 6px; }
+  .bubble .og .img { height: 92px; background: linear-gradient(135deg, #221c44 60%, #322a5e); position: relative; }
+  .bubble .og .img .t { position: absolute; left: 8px; bottom: 6px; right: 8px; color: #fff;
+    font-family: 'Fraunces', Georgia, serif; font-size: 10px; font-weight: 600; line-height: 1.25; }
+  .bubble .og .bd { padding: 6px 8px 7px; }
+  .bubble .og .bd .u { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; letter-spacing: .08em; color: #8696a0; text-transform: uppercase; }
+  .bubble .og .bd .h { font-size: 9.5px; color: #d9f2e5; margin-top: 2px; }
+  .bubble .lnk { color: #53bdeb; word-break: break-all; }
+  .bubble .time { display: block; text-align: right; color: #8696a0; font-size: 8.5px; margin-top: 4px; }
+
+  .caption-block .lbl { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; }
+  .copybox { border: 1px solid var(--line); background: #fbf8f0; border-radius: 10px; padding: 14px 16px; font-size: 13px;
+    line-height: 1.6; color: var(--ink); position: relative; }
+  .copybox.wa { font-size: 13.5px; }
+  .copybox .hash { color: var(--accent-dark); }
+  .copybox .lnk { color: var(--accent-dark); font-weight: 600; }
+  .copybtn { position: absolute; top: 10px; right: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); background: #fff; border: 1px solid var(--line);
+    border-radius: 6px; padding: 5px 9px; }
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+
+  .kit-side { display: flex; flex-direction: column; gap: 18px; }
+  .link-card { background: var(--ink); color: #fff; border-radius: var(--radius); padding: 22px; }
+  .link-card .k { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: #9d96c9; }
+  .link-card .code { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.08); border: 1px dashed rgba(255,255,255,.3);
+    border-radius: 10px; padding: 12px 14px; margin: 12px 0; }
+  .link-card .code b { font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #fff; }
+  .link-card .code .btn { margin-left: auto; padding: 6px 12px; font-size: 11px; }
+  .link-card .qr { display: flex; gap: 14px; align-items: center; margin-top: 4px; }
+  .link-card .qr p { color: #b9b3dd; font-size: 11.5px; }
+  .impact-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; }
+  .impact-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+  .impact-row .stat-num { font-size: 20px; }
+  .impact-note { margin-top: 12px; background: var(--green-soft); border: 1px solid #c4e0d2; border-radius: 9px;
+    padding: 10px 12px; font-size: 12px; color: var(--ink-2); }
+  .impact-note b { color: var(--green); }
+
+  .foot { display: flex; justify-content: space-between; align-items: center; padding: 30px 0; color: var(--ink-3); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="#">
+      <svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="15.5" fill="none" stroke="#ff8a75" stroke-width="2"/><circle cx="17" cy="17" r="10.5" fill="none" stroke="#ff8a75" stroke-width="1" stroke-dasharray="3 2.4"/><path d="M12 17.5l3.4 3.4L22.5 13.6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="brand-name">Witness <em>Relay</em></span>
+    </a>
+    <nav class="topnav">
+      <a href="#">Live feed</a>
+      <a class="active" href="#">Relay hub</a>
+      <a href="#">Impact</a>
+      <a href="#">How it works</a>
+    </nav>
+    <div class="topbar-right">
+      <a class="btn btn-ghost" href="#">Signed in as Amina</a>
+      <a class="btn btn-accent" href="#">New relay</a>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <h1>Hand the story to someone<br>who will <em>carry it.</em></h1>
+      <p>Choose the community you can reach. We hand you a channel-ready kit — caption, card, and a link that is yours alone. When people act, the chain shows it was you.</p>
+    </div>
+    <div class="hero-steps">
+      <div class="hero-step"><span class="n">01</span><span>Pick your relay lane</span></div>
+      <div class="hero-step"><span class="n">02</span><span>Get your kit + tracked link</span></div>
+      <div class="hero-step"><span class="n">03</span><span>Watch your chain move: views → clicks → confirmed donations</span></div>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="step-label"><span class="sn">Step 1</span><h2>Choose your relay lane</h2></div>
+  <div class="lanes">
+    <div class="lane">
+      <div class="ic">🕌</div><b>Mosque &amp; madrasa</b>
+      <p>Friday circles, halaqas, community announcements.</p>
+      <div class="meta"><span>14 lanes</span><span>96 relayers</span></div>
+    </div>
+    <div class="lane">
+      <div class="ic">🎓</div><b>Campus</b>
+      <p>MSAs, student groups, teach-ins and tabling days.</p>
+      <div class="meta"><span>9 lanes</span><span>58 relayers</span></div>
+    </div>
+    <div class="lane on">
+      <div class="ic">🎙️</div><b>Creator</b>
+      <p>Short video, stories, threads — kit includes cut-downs.</p>
+      <div class="meta"><span class="on-tag">● Your lane</span><span>11 relayers</span></div>
+    </div>
+    <div class="lane">
+      <div class="ic">🌍</div><b>Diaspora</b>
+      <p>Community WhatsApp groups, hometown associations.</p>
+      <div class="meta"><span>13 lanes</span><span>74 relayers</span></div>
+    </div>
+  </div>
+
+  <div class="step-label"><span class="sn">Step 2</span><h2>Your share kit — “Famine confirmed in Zamzam camp”</h2></div>
+  <div class="kit">
+    <div class="kit-main">
+      <div class="kit-head">
+        <span class="stamp" style="transform:none;">Witness verified</span>
+        <b>Zamzam famine event card</b>
+        <div class="lang"><span class="on">English</span><span>العربية</span></div>
+      </div>
+      <div class="channels">
+        <span class="ch-tab on">WhatsApp</span>
+        <span class="ch-tab">Instagram</span>
+        <span class="ch-tab">Short video</span>
+        <span class="ch-tab">X / Threads</span>
+      </div>
+      <div class="ch-body">
+        <div class="phone">
+          <div class="ph-head"><span class="av"></span><div><b>Family group — Minneapolis</b><span>12 participants</span></div></div>
+          <div class="ph-body">
+            <div class="bubble">
+              <div class="og">
+                <div class="img"><span class="t">Famine confirmed in Zamzam camp…</span></div>
+                <div class="bd"><span class="u">witnessrelay.org</span><div class="h">Witness verified · 3 sources · what $40 does this week</div></div>
+              </div>
+              Verified news, not a chain message 🧵 — famine confirmed at Zamzam camp, North Darfur. 3 cited sources + exactly what a donation funds this week: <span class="lnk">witnessrelay.org/r/ZN24</span><span class="time">14:22 ✓✓</span>
+            </div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="caption-block">
+            <div class="lbl">Message text — ready to paste</div>
+            <div class="copybox wa">Verified news, not a chain message — famine confirmed at Zamzam camp, North Darfur. 3 cited sources + exactly what a donation funds this week: <span class="lnk">witnessrelay.org/r/ZN24</span>
+              <button class="copybtn">Copy</button>
+            </div>
+          </div>
+          <div class="caption-block">
+            <div class="lbl">Instagram caption</div>
+            <div class="copybox">Famine, confirmed. Zamzam camp, North Darfur — and the corridor is still closed.<br><br>I'm relaying this one because the card is sourced: 3 citations, editor-approved, and it shows what $40 actually buys this week.<br><br><span class="hash">#Sudan #Zamzam #KeepSudanOnTheFeed</span> <span class="lnk">→ link in bio, tagged to my relay</span>
+              <button class="copybtn">Copy</button>
+            </div>
+          </div>
+          <div class="caption-block">
+            <div class="lbl">Kit contents</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <span class="chip chip-navy">OG card 1200×630</span>
+              <span class="chip chip-navy">Story 1080×1920</span>
+              <span class="chip chip-navy">Feed 1080×1350</span>
+              <span class="chip chip-navy">15s video script</span>
+              <span class="chip chip-amber">Arabic versions included</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="kit-side">
+      <div class="link-card">
+        <span class="k">Your tracked link</span>
+        <div class="code"><b>witnessrelay.org/r/ZN24</b><a class="btn btn-accent" href="#">Copy</a></div>
+        <div class="qr">
+          <svg width="72" height="72" viewBox="0 0 33 33"><rect width="33" height="33" fill="#fff"/><rect x="1" y="1" width="9" height="9" fill="#221c44"/><rect x="3" y="3" width="5" height="5" fill="#fff"/><rect x="4" y="4" width="3" height="3" fill="#221c44"/><rect x="23" y="1" width="9" height="9" fill="#221c44"/><rect x="25" y="3" width="5" height="5" fill="#fff"/><rect x="26" y="4" width="3" height="3" fill="#221c44"/><rect x="1" y="23" width="9" height="9" fill="#221c44"/><rect x="3" y="25" width="5" height="5" fill="#fff"/><rect x="4" y="26" width="3" height="3" fill="#221c44"/><rect x="12" y="2" width="2" height="2" fill="#221c44"/><rect x="16" y="4" width="2" height="2" fill="#221c44"/><rect x="12" y="7" width="2" height="2" fill="#221c44"/><rect x="19" y="12" width="2" height="2" fill="#221c44"/><rect x="23" y="14" width="2" height="2" fill="#221c44"/><rect x="27" y="12" width="2" height="2" fill="#221c44"/><rect x="12" y="12" width="3" height="3" fill="#e8442e"/><rect x="16" y="16" width="2" height="2" fill="#221c44"/><rect x="12" y="19" width="2" height="2" fill="#221c44"/><rect x="19" y="20" width="2" height="2" fill="#221c44"/><rect x="23" y="23" width="2" height="2" fill="#221c44"/><rect x="27" y="26" width="2" height="2" fill="#221c44"/><rect x="14" y="27" width="2" height="2" fill="#221c44"/><rect x="18" y="24" width="2" height="2" fill="#221c44"/><rect x="24" y="19" width="3" height="3" fill="#e8442e"/></svg>
+          <p>Printable QR for tabling days, khutbah slides, and posters. Same lane, same attribution.</p>
+        </div>
+      </div>
+
+      <div class="impact-card">
+        <div class="section-label" style="margin-bottom:4px;">Your relay — all time</div>
+        <div class="impact-row">
+          <div><div class="stat-num">3</div><div class="stat-lbl">Events carried</div></div>
+          <div><div class="stat-num">2,140</div><div class="stat-lbl">Views</div></div>
+          <div><div class="stat-num">96</div><div class="stat-lbl">Clicks</div></div>
+        </div>
+        <div class="impact-note"><b>$180 confirmed</b> through your links · 3 gifts pending reconciliation. Your chain, provable — never estimated.</div>
+      </div>
+
+      <div class="card card-pad" style="padding:18px 22px;">
+        <div class="section-label" style="margin-bottom:8px;">Ground rules</div>
+        <p style="font-size:12.5px;color:var(--ink-2);">Post the card as-is — every claim in it is sourced and editor-approved. Use Ethar field imagery only. Say "confirmed" only for confirmed donations; your dashboard already labels the difference.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="foot">
+    <span>Witness Relay — news in. Donations out.</span>
+    <span class="sample-tag">◐ Prototype mockup · sample data</span>
+  </div>
+</main>
+
+</body>
+</html>

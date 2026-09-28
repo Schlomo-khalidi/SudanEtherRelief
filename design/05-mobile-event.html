@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Witness Relay — Mobile Event</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+  body { background: #efe9da; }
+  .device { width: 390px; margin: 24px auto; background: #fbf8f0; border-radius: 30px; border: 10px solid #17132e;
+    overflow: hidden; box-shadow: 0 30px 60px rgba(23,19,46,.35); }
+  .m-top { background: var(--ink); color: #fff; padding: 12px 16px; display: flex; align-items: center; gap: 8px; }
+  .m-top .brand-name { font-size: 14px; }
+  .m-top .live { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; letter-spacing: .1em;
+    text-transform: uppercase; color: #7fd3a8; }
+  .m-body { padding: 16px 16px 90px; }
+  .m-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .m-chips .stamp { font-size: 8.5px; padding: 4px 8px; }
+  .m-chips .chip { font-size: 8px; padding: 3px 8px; }
+  .m-dateline { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent-dark); margin-bottom: 6px; }
+  h1.m { font-family: 'Fraunces', Georgia, serif; font-size: 24px; font-weight: 600; line-height: 1.18; letter-spacing: -.01em; }
+  .m-approval { font-size: 10.5px; color: var(--ink-3); margin-top: 8px; }
+  .m-photo { margin: 14px 0; border-radius: 12px; height: 150px; background:
+    linear-gradient(rgba(23,19,46,.25), rgba(23,19,46,.45)), linear-gradient(135deg, #4a4370 0%, #221c44 70%);
+    position: relative; }
+  .m-photo .credit { position: absolute; left: 8px; bottom: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 7.5px;
+    letter-spacing: .08em; color: rgba(255,255,255,.75); text-transform: uppercase; }
+  .m-photo .badge { position: absolute; right: 8px; top: 8px; background: rgba(30,127,79,.95); color: #fff;
+    font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; letter-spacing: .08em; text-transform: uppercase;
+    border-radius: 4px; padding: 3px 6px; }
+  .m-sec { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent-dark); margin: 18px 0 8px; display: flex; align-items: center; gap: 8px; }
+  .m-sec::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .m-claim { border-left: 3px solid var(--navy-soft); padding-left: 10px; font-size: 13px; margin-bottom: 10px; color: var(--ink); }
+  .src-pill { display: inline-flex; font-family: 'IBM Plex Mono', monospace; font-size: 8px; font-weight: 600;
+    color: var(--ink-2); background: var(--navy-soft); border-radius: 4px; padding: 2px 6px; margin-left: 4px; vertical-align: 1px; }
+  .m-ask { background: var(--green-soft); border: 1px solid #c4e0d2; border-radius: 12px; padding: 12px 14px; font-size: 12.5px; }
+  .m-ask b { color: var(--green); }
+  .m-chain { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .m-chain .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .m-chain b { font-family: 'Fraunces', Georgia, serif; font-size: 17px; display: block; }
+  .m-chain span { font-family: 'IBM Plex Mono', monospace; font-size: 7px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+  .m-chain .mnote { font-size: 10px; color: var(--ink-2); margin-top: 8px; border-top: 1px solid #f0ead9; padding-top: 8px; }
+  .m-sources { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .m-src { display: flex; justify-content: space-between; font-size: 11.5px; padding: 7px 0; border-bottom: 1px solid #f0ead9; }
+  .m-src:last-child { border: 0; }
+  .m-src span { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; color: var(--ink-3); }
+  .m-dock { position: absolute; }
+  .sticky { position: sticky; bottom: 0; background: rgba(251,248,240,.97); border-top: 1px solid var(--line);
+    padding: 12px 16px; display: flex; gap: 10px; align-items: center; backdrop-filter: blur(4px); }
+  .sticky .txt { font-size: 10px; color: var(--ink-2); line-height: 1.35; }
+  .sticky .txt b { display: block; font-size: 11.5px; color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="m-top">
+    <svg width="22" height="22" viewBox="0 0 34 34"><circle cx="17" cy="17" r="15.5" fill="none" stroke="#ff8a75" stroke-width="2.4"/><path d="M12 17.5l3.4 3.4L22.5 13.6" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="brand-name">Witness <em>Relay</em></span>
+    <span class="live">● 3 live</span>
+  </div>
+
+  <div class="m-body">
+    <div class="m-chips">
+      <span class="stamp">Witness verified</span>
+      <span class="chip chip-navy">3 sources</span>
+      <span class="chip">Editor-approved</span>
+    </div>
+    <div class="m-dateline">Zamzam Camp, North Darfur · 24 Sept 2026</div>
+    <h1 class="m">Famine confirmed in Zamzam displacement camp as access remains blocked</h1>
+    <div class="m-approval">Approved by A. Osman · 24 Sept, 12:02 UTC</div>
+
+    <div class="m-photo"><span class="badge">Ethar field asset</span><span class="credit">Credit: Ethar Relief · 22 Sept</span></div>
+
+    <div class="m-sec">What happened</div>
+    <div class="m-claim">The IPC formally confirmed famine in Zamzam camp — the first in Sudan since 2017.<span class="src-pill">S1</span><span class="src-pill">S3</span></div>
+    <div class="m-claim">Aid convoys have been unable to reach the camp since April.<span class="src-pill">S1</span></div>
+    <div class="m-claim">Field teams report 300+ children admitted for severe malnutrition this week.<span class="src-pill">S2</span></div>
+
+    <div class="m-sec">What a donation supports — Ethar-approved</div>
+    <div class="m-ask"><b>$40</b> — one emergency food parcel for a family of six for two weeks. Teams are staging from the nearest reachable corridor.</div>
+
+    <div class="m-sec">The chain so far</div>
+    <div class="m-chain">
+      <div class="row">
+        <div><b>9,412</b><span>Views</span></div>
+        <div><b>1,187</b><span>Clicks</span></div>
+        <div><b style="color:var(--green);">$2,340</b><span>Confirmed</span></div>
+      </div>
+      <div class="mnote">34 confirmed gifts via tracked links · 11 pending reconciliation · top lane: Diaspora — Minneapolis</div>
+    </div>
+
+    <div class="m-sec">Sources (3)</div>
+    <div class="m-sources">
+      <div class="m-src"><b>IPC / UN OCHA</b><span>24 Sept · 09:05 UTC</span></div>
+      <div class="m-src"><b>Radio Dabanga</b><span>23 Sept · 18:40 UTC</span></div>
+      <div class="m-src"><b>Sudan Tribune</b><span>24 Sept · 11:12 UTC</span></div>
+    </div>
+  </div>
+
+  <div class="sticky">
+    <div class="txt"><b>$2,340 confirmed so far</b>34 gifts attributed to this event's chain</div>
+    <a class="btn btn-accent btn-lg" href="#" style="margin-left:auto;">Give →</a>
+  </div>
+</div>
+
+</body>
+</html>
