@@ -14,12 +14,16 @@
 
 | Layer | State |
 |---|---|
-| **L0 Foundations** | ✅ Scaffolded & building clean — Next 16 + TS in `web/`, design system ported, `/api/health` with DB probe, env template. Pushed to GitHub. ⬜ Vercel project + Sentry still open. |
-| **L1 Data core** | ✅ **Live** — migration run on Supabase (`gbwtqknmawiruagjxnri`), seeded (4 lanes, 5 relayers, 3 events: 2 approved / 1 in review), RLS verified: anon reads see only approved events, anon writes rejected (42501). ⬜ Typed DB client still pending. |
-| **L2 Ingest/AI** · **L3 Public product** | ⬜ Next up |
-| **Design** | ✅ Final — 6 views as HTML + 2× renders in `design/`, self-contained team walkthrough `design/Witness-Relay-Design-Walkthrough.html` |
+| **L0 Foundations** | ✅ Scaffolded & building clean. GitHub live; ⬜ Vercel + Sentry open. |
+| **L1 Data core** | ✅ **Live** — Supabase wired, seeded (4 lanes, 5 relayers, 3 events), RLS verified both ways. |
+| **L2 Ingest/AI** | ⬜ Needs an LLM API key (any one: OpenAI / Gemini / etc.). |
+| **L3 Public product** | ✅ **Live on dev** — feed with real aggregates, event pages (claims + source pills + approval line), chain board, OG card generator, `/r/[code]` view tracking (verified counting), Give-click route ready for the donation URL. |
+| **L4 Newsroom** · **L5 Relay hub UI** | ⬜ Next builds. L5's tracking plumbing was pulled forward into L3 (already live). |
+| **Design** | ✅ Final — in `design/` |
 
-**Immediate next actions (in order):** ① create Supabase project → run migration → seed → verify `/api/health` says `db: ok` · ② Vercel project wired to the repo (deploy later is fine) · ③ then build L2 (ingest + AI drafting) and L3 (feed + event pages) in parallel with relayer recruitment.
+**Live demo path (works right now):** `/` feed → `/event/zamzam-famine-confirmed` → `/r/ZA2GLP` logs a view and redirects with attribution. Chain numbers on the event page move in real time.
+
+**Immediate next actions:** ① build L4 newsroom (no external deps) · ② send an LLM API key for L2 ingest · ③ get the LaunchGood campaign URL from Ethar to light up the money path (`DONATION_BASE_URL`) · ④ keep recruiting relayers (Track B).
 
 ---
 
@@ -84,11 +88,12 @@
 **Goal:** judges can click a live feed and a fully sourced event page.
 **Use:** server components + revalidation · `next/og` (Satori) for dynamic share images.
 
-- [ ] `/` live feed: approved events, live stats bar (aggregate query), filter chips, **Relay this** CTA per card
-- [ ] `/event/[slug]`: claims with source pills, sources card with quotes, Ethar-approved donation ask, share options
-- [ ] Chain board component: event → lanes → relayers → views → clicks → **confirmed $**
-- [ ] `/event/[slug]/opengraph-image` — Satori template, EN + AR variants
-- [ ] OG/meta tags on event pages; loading/empty/error states
+- [x] `/` live feed: approved events, live stats bar (aggregate query), filter chips, **Relay this** CTA per card
+- [x] `/event/[slug]`: claims with source pills, sources card with quotes, Ethar-approved donation ask, share options
+- [x] Chain board component: event → lanes → relayers → views → clicks → **confirmed $** (fed by the `event_chain` / `event_lane_chain` SQL views)
+- [x] `/event/[slug]/opengraph-image` — Satori template with Fraunces/Plex Mono TTF loading (EN live; AR variants land with the Layer 5 kits)
+- [x] OG/meta tags on event pages; loading/empty/error states
+- [x] *Pulled forward from L5:* `/r/[code]` tracked redirect logs attributed views; `/api/track/click` logs Give taps and forwards `?ref=` once `DONATION_BASE_URL` is set
 
 **Done when:** an approved event renders publicly and its WhatsApp link preview shows the generated card.
 
