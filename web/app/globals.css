@@ -52,6 +52,10 @@ a { color: inherit; }
 .topnav a { color: #cfc9ec; text-decoration: none; font-size: 13.5px; font-weight: 500; }
 .topnav a.active { color: #fff; border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
 .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+@media (max-width: 760px) {
+  .topnav { display: none; }
+  .wrap { padding: 0 18px; }
+}
 
 /* ---------- buttons ---------- */
 .btn {
