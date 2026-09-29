@@ -271,12 +271,12 @@ table.data tr:last-child td { border-bottom: 0; }
 .live-item span { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: #9d96c9; }
 
 .mission {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 26px;
   margin: 26px 0 0;
   padding: 42px 42px 40px;
   border-radius: 18px;
   background:
-    linear-gradient(100deg, rgba(23, 19, 46, .84) 0%, rgba(23, 19, 46, .62) 100%),
+    linear-gradient(100deg, rgba(23, 19, 46, .74) 0%, rgba(23, 19, 46, .45) 100%),
     url("/hero/sudan-camp.jpg") center 35% / cover no-repeat;
   box-shadow: var(--shadow);
 }
