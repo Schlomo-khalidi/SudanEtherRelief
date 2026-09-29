@@ -25,6 +25,10 @@
 
 html { scroll-behavior: smooth; }
 
+/* the page itself never pans horizontally — side-scrolling lives inside
+   cards and rails only (tables, the KPI rail); hidden drawers excluded */
+html, body { overflow-x: clip; }
+
 body {
   background: var(--paper);
   color: var(--ink);
@@ -174,7 +178,7 @@ a { color: inherit; }
 
   /* wide tables scroll inside their card instead of poking out of it */
   .card { overflow: hidden; }
-  table.data { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; min-width: 620px; }
+  table.data { display: block; width: max-content; min-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 
 /* ---------- buttons ---------- */
