@@ -85,7 +85,7 @@ export default async function RelayPage({
 
         <Card>
           <SectionLabel>How the relay works</SectionLabel>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+          <div className="how-grid">
             <div>
               <div className="mono" style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".1em", color: "var(--accent-dark)", marginBottom: 5 }}>01 · PICK</div>
               <p style={{ fontSize: 12.5, color: "var(--ink-2)" }}>Choose an approved event and your lane.</p>

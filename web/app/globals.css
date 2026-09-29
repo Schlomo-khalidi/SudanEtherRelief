@@ -428,7 +428,7 @@ table.data tr:last-child td { border-bottom: 0; }
 
 /* ---------- relay hub ---------- */
 .relay-hero { background: var(--ink); color: #fff; }
-.relay-hero-inner { padding: 40px 0 36px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; }
+.relay-hero-inner { padding: 40px 24px 36px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; }
 @media (max-width: 860px) { .relay-hero-inner { grid-template-columns: 1fr; } }
 .relay-hero h1 { font-family: var(--font-display); font-size: 34px; font-weight: 600; line-height: 1.15; }
 .relay-hero h1 em { font-style: italic; color: #ff8a75; }
@@ -440,6 +440,14 @@ table.data tr:last-child td { border-bottom: 0; }
 }
 .lanes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 34px; }
 @media (max-width: 860px) { .lanes { grid-template-columns: repeat(2, 1fr); } }
+.how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 760px) {
+  .relay-hero-inner { grid-template-columns: 1fr; gap: 24px; padding: 28px 16px 30px; }
+  .relay-hero h1 { font-size: 28px; }
+  .lanes { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .lane { padding: 14px; }
+  .how-grid { grid-template-columns: 1fr; gap: 12px; }
+}
 .lane { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
 .lane b { font-size: 14.5px; display: block; }
 .lane p { font-size: 12px; color: var(--ink-2); margin-top: 3px; line-height: 1.45; }
