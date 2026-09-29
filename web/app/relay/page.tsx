@@ -99,9 +99,9 @@ export default async function RelayPage({
               <p style={{ fontSize: 12.5, color: "var(--ink-2)" }}>Your dashboard shows your chain: views → clicks → confirmed donations. Provably yours, never estimated.</p>
             </div>
           </div>
-          <div style={{ marginTop: 14 }}>
-            <Chip tone="green">Every claim pre-sourced</Chip>{" "}
-            <Chip tone="green">Every kit editor-approved</Chip>{" "}
+          <div style={{ marginTop: 18, display: "flex", flexWrap: "wrap", gap: "10px 8px" }}>
+            <Chip tone="green">Every claim pre-sourced</Chip>
+            <Chip tone="green">Every kit editor-approved</Chip>
             <Chip tone="amber">Say “confirmed” only for confirmed donations</Chip>
           </div>
         </Card>
