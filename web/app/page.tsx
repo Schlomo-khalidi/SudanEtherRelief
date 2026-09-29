@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TopBar, BroadcastIcon } from "@/components/Brand";
 import { EventCard } from "@/components/EventCard";
+import { LivebarCards } from "@/components/LivebarCards";
 import { getFeedData } from "@/lib/queries";
 import { TOPIC_CHIPS, isTopicSlug, topicsFor } from "@/lib/topics";
 import { money, num } from "@/lib/format";
@@ -39,14 +40,16 @@ export default async function FeedPage({
       <TopBar />
 
       <div className="livebar">
-        <div className="wrap livebar-inner">
-          <div className="live-item"><b>{String(global.events).padStart(2, "0")}</b><span>Approved events live</span></div>
-          <div className="live-item"><b>{num(global.relayers)}</b><span>Relayers onboarded</span></div>
-          <div className="live-item"><b>{num(global.views)}</b><span>Tracked views</span></div>
-          <div className="live-item"><b>{num(global.clicks)}</b><span>Give clicks</span></div>
-          <div className="live-item"><b><em>{money(global.confirmed)}</em></b><span>Confirmed donations</span></div>
-          <div className="live-item"><b>{num(global.pending)}</b><span>Pending reconciliation</span></div>
-        </div>
+        <LivebarCards
+          stats={[
+            { value: String(global.events).padStart(2, "0"), label: "Approved events live", dot: "#ff8a75" },
+            { value: num(global.relayers), label: "Relayers onboarded", dot: "#e7b958" },
+            { value: num(global.views), label: "Tracked views", dot: "#7fd3a8" },
+            { value: num(global.clicks), label: "Give clicks", dot: "#8ab4ff" },
+            { value: money(global.confirmed), label: "Confirmed donations", accent: true, dot: "#c084fc" },
+            { value: num(global.pending), label: "Pending reconciliation", dot: "#f2a65a" },
+          ]}
+        />
       </div>
 
       <main className="wrap">
