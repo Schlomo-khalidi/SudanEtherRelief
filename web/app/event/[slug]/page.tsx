@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { TopBar } from "@/components/Brand";
 import { ChainBoard } from "@/components/ChainBoard";
+import { Confetti } from "@/components/Confetti";
 import { getEventDetail } from "@/lib/queries";
 import { stripeConfigured } from "@/lib/stripe";
 import { money, shortDate, wireDate } from "@/lib/format";
@@ -40,6 +41,7 @@ export default async function EventPage({
 
   return (
     <>
+      {thanks ? <Confetti fire /> : null}
       <TopBar />
       <main className="wrap">
         <div className="crumbs">
