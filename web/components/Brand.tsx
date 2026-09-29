@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 export function BrandSeal({ size = 34 }: { size?: number }) {
@@ -37,21 +38,6 @@ export function BrandMark() {
     </a>
   );
 }
-
-const NAV_ITEMS = [
-  {
-    href: "/",
-    label: "Live feed",
-    match: (p: string) => p === "/" || p.startsWith("/event"),
-  },
-  { href: "/relay", label: "Relay hub", match: (p: string) => p.startsWith("/relay") },
-  { href: "/impact", label: "Impact", match: (p: string) => p.startsWith("/impact") },
-  {
-    href: "/how-it-works",
-    label: "How it works",
-    match: (p: string) => p.startsWith("/how-it-works"),
-  },
-];
 
 export function BroadcastIcon({ size = 17 }: { size?: number }) {
   return (
@@ -108,8 +94,43 @@ function ChevronRight() {
   );
 }
 
+const NAV_ITEMS = [
+  {
+    href: "/",
+    label: "Live feed",
+    match: (p: string) => p === "/" || p.startsWith("/event"),
+  },
+  { href: "/relay", label: "Relay hub", match: (p: string) => p.startsWith("/relay") },
+  { href: "/impact", label: "Impact", match: (p: string) => p.startsWith("/impact") },
+  {
+    href: "/how-it-works",
+    label: "How it works",
+    match: (p: string) => p.startsWith("/how-it-works"),
+  },
+];
+
 export function TopBar() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    document.documentElement.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.documentElement.style.overflow = "";
+    };
+  }, [open]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
     <header className="topbar">
@@ -125,9 +146,46 @@ export function TopBar() {
         <div className="topbar-right">
           <a className="btn btn-accent" href="/relay">
             <MegaphoneIcon />
-            Relay this news
+            <span className="hide-sm">Relay this news</span>
+            <span className="show-sm">Relay</span>
             <ChevronRight />
           </a>
+          <button
+            className={`burger${open ? " open" : ""}`}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen(!open)}
+          >
+            <span />
+            <span />
+          </button>
+        </div>
+      </div>
+
+      {/* mobile drawer */}
+      <div className={`m-drawer${open ? " open" : ""}`} aria-hidden={!open}>
+        <div className="m-top">
+          <BrandMark />
+          <button className="m-close" aria-label="Close menu" onClick={() => setOpen(false)}>
+            ✕
+          </button>
+        </div>
+        <nav className="m-links">
+          {NAV_ITEMS.map((item) => (
+            <a key={item.href} className={item.match(pathname ?? "/") ? "active" : ""} href={item.href}>
+              {item.label}
+              <span className="m-arrow">→</span>
+            </a>
+          ))}
+        </nav>
+        <div className="m-foot">
+          <a className="btn btn-accent btn-lg" href="/relay" style={{ justifyContent: "center" }}>
+            <MegaphoneIcon />
+            Relay this news
+          </a>
+          <p className="mono">
+            News in — donations out. Every link attributed, every claim sourced.
+          </p>
         </div>
       </div>
     </header>
