@@ -127,7 +127,7 @@ a { color: inherit; }
   .m-links a.active { color: #fff; }
   .m-links a .m-arrow { font-size: 20px; opacity: 0; transform: translateX(-6px); transition: opacity .2s ease, transform .2s ease; }
   .m-links a.active .m-arrow { opacity: 1; color: #ff8a75; transform: translateX(0); }
-  .m-foot { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+  .m-foot { margin-top: 30px; display: flex; flex-direction: column; gap: 12px; }
   .m-foot .mono { font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: #9d96c9; line-height: 1.7; }
 }
 @media (prefers-reduced-motion: reduce) {
