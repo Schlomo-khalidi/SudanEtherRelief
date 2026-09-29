@@ -6,6 +6,8 @@
 
 **Repo:** [github.com/Schlomo-khalidi/SudanEtherRelief](https://github.com/Schlomo-khalidi/SudanEtherRelief) — branch `main`, pushed over SSH. (Note: HTTPS pushes of large payloads 408 on this connection — always push via SSH.)
 
+**🟢 LIVE:** [https://sudanetherrelief.vercel.app](https://sudanetherrelief.vercel.app) — deployed via CLI (`vercel --prod` from `web/`, token-based). All 11 production env vars set; daily ingest cron active; fonts self-hosted so builds are deterministic. Deploy updates: `cd web && npx vercel --prod`.
+
 **How to use this file:** work top-to-bottom. Each layer lists what to *use*, the *build* tasks (check them off as you go), and a *done-when* gate — do not start the next layer until the gate passes. Layers are dependency-ordered; Track B runs in parallel from day 1.
 
 ---
