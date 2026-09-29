@@ -69,7 +69,8 @@ export function TopBar() {
         </nav>
         <div className="topbar-right">
           <a className="btn btn-accent" href="/relay">
-            Relay this news
+            <span className="hide-sm">Relay this news</span>
+            <span className="show-sm">Relay</span>
           </a>
         </div>
       </div>
