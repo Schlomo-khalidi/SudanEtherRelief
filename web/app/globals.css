@@ -131,18 +131,28 @@ a { color: inherit; }
 }
 
 @media (max-width: 760px) {
-  /* live stats: one compact row, thin dividers — exactly the mockup */
-  .livebar-inner {
-    display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: stretch;
-    gap: 0; padding: 12px 0 14px;
+  /* live stats: swipeable KPI cards — 2½ visible, snap to align */
+  .livebar .livebar-inner {
+    display: flex; flex-wrap: nowrap; gap: 10px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 14px 16px 16px;
+    scrollbar-width: none;
+    scroll-padding-left: 16px;
   }
+  .livebar-inner::-webkit-scrollbar { display: none; }
   .live-item {
-    flex: 1 1 0; min-width: 0; text-align: center;
-    padding: 0 1px; border-left: 1px solid rgba(255, 255, 255, .14);
+    flex: 0 0 44%; scroll-snap-align: start; text-align: left;
+    background: rgba(255, 255, 255, .05);
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 12px;
+    padding: 12px 14px;
   }
-  .live-item:first-child { border-left: 0; }
-  .live-item b { font-size: 20px; }
-  .live-item span { font-size: 6px; letter-spacing: .02em; line-height: 1.5; display: block; }
+  .live-item:last-child {
+    border-color: rgba(255, 138, 117, .5);
+    background: rgba(232, 68, 46, .12);
+  }
+  .live-item b { font-size: 22px; }
+  .live-item span { font-size: 8.5px; letter-spacing: .1em; line-height: 1.4; display: block; white-space: normal; }
 
   /* CTA band stacks cleanly */
   .band-inner { flex-direction: column; align-items: center; gap: 12px; padding: 28px 24px 30px; text-align: center; }
