@@ -78,9 +78,12 @@ a { color: inherit; }
   .topnav a.active { padding-bottom: 5px; }
 
   /* CTA band stacks cleanly */
-  .band-inner { flex-direction: column; align-items: flex-start; gap: 12px; padding: 26px 22px 28px; }
+  .band-inner { flex-direction: column; align-items: center; gap: 12px; padding: 28px 24px 30px; text-align: center; }
   .band h3, .band p { max-width: 100%; }
-  .band .btn { margin-left: 0; width: 100%; justify-content: center; }
+  .band .btn {
+    margin: 4px auto 0; width: auto; justify-content: center;
+    padding: 10px 26px; font-size: 13px;
+  }
 }
 @media (max-width: 760px) {
   .wrap { padding: 0 18px; }
@@ -209,11 +212,16 @@ table.data tr:last-child td { border-bottom: 0; }
 .src-row div b { font-size: 12.5px; font-weight: 600; display: block; }
 .src-row div span { font-size: 11.5px; color: var(--ink-3); }
 
-.band { background: var(--ink); color: #fff; margin-top: 26px; }
-.band-inner { display: flex; align-items: center; gap: 30px; padding: 30px 0; flex-wrap: wrap; }
+.band {
+  background: var(--ink); color: #fff;
+  margin-top: 26px;
+  border-radius: 18px;
+}
+.band-inner { display: flex; align-items: center; gap: 30px; padding: 34px 38px; flex-wrap: wrap; }
 .band h3 { font-family: var(--font-display); font-size: 22px; font-weight: 600; max-width: 420px; line-height: 1.3; }
 .band p { color: #b9b3dd; font-size: 13px; max-width: 380px; }
-.band .btn { margin-left: auto; }
+.band .btn { margin-left: auto; transition: transform .18s ease, box-shadow .18s ease; }
+.band .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(232, 68, 46, .38); }
 .foot { display: flex; justify-content: space-between; align-items: center; padding: 22px 0 30px; color: var(--ink-3); font-size: 12px; gap: 14px; flex-wrap: wrap; }
 .sample-tag {
   display: inline-flex; align-items: center; gap: 6px;
