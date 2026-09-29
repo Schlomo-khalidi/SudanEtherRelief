@@ -1,22 +1,29 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const fraunces = Fraunces({
+// Self-hosted fonts (web/fonts/) — no build-time network dependency, so
+// Vercel/CI builds never fail on a Google Fonts fetch.
+const fraunces = localFont({
+  src: [{ path: "../fonts/Fraunces-Variable.ttf", weight: "100 900", style: "normal" }],
   variable: "--font-fraunces",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  display: "swap",
 });
 
-const inter = Inter({
+const inter = localFont({
+  src: [{ path: "../fonts/Inter-Variable.ttf", weight: "100 900", style: "normal" }],
   variable: "--font-inter",
-  subsets: ["latin"],
+  display: "swap",
 });
 
-const plexMono = IBM_Plex_Mono({
+const plexMono = localFont({
+  src: [
+    { path: "../fonts/IBMPlexMono-Regular.ttf", weight: "400", style: "normal" },
+    { path: "../fonts/IBMPlexMono-Medium.ttf", weight: "500", style: "normal" },
+    { path: "../fonts/IBMPlexMono-SemiBold.ttf", weight: "600", style: "normal" },
+  ],
   variable: "--font-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
