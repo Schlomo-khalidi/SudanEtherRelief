@@ -284,9 +284,10 @@ table.data tr:last-child td { border-bottom: 0; }
 .mission h1 {
   font-family: var(--font-display); font-size: 32px; font-weight: 600;
   line-height: 1.18; max-width: 700px; color: #f6f1e5;
+  margin-top: auto;
 }
 .mission h1 em { font-style: italic; color: #ff8a75; }
-.mission p { max-width: 560px; color: rgba(246, 241, 229, .85); font-size: 14px; margin-top: auto; }
+.mission p { max-width: 560px; color: rgba(246, 241, 229, .85); font-size: 16px; font-weight: 600; margin-top: auto; }
 
 .filters { display: flex; gap: 10px; padding: 18px 0 22px; align-items: center; flex-wrap: wrap; }
 .filter {
