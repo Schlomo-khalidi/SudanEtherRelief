@@ -3,6 +3,7 @@ import Link from "next/link";
 import { TopBar } from "@/components/Brand";
 import { ChainBoard } from "@/components/ChainBoard";
 import { getEventDetail } from "@/lib/queries";
+import { stripeConfigured } from "@/lib/stripe";
 import { money, shortDate, wireDate } from "@/lib/format";
 import type { Claim, SourceRow } from "@/lib/types";
 
@@ -13,10 +14,10 @@ export default async function EventPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ via?: string }>;
+  searchParams: Promise<{ via?: string; thanks?: string; canceled?: string; donate_error?: string }>;
 }) {
   const { slug } = await params;
-  const { via } = await searchParams;
+  const { via, thanks, canceled, donate_error } = await searchParams;
   const detail = await getEventDetail(slug);
   if (!detail) notFound();
 
@@ -28,8 +29,11 @@ export default async function EventPage({
   sources.forEach((s: SourceRow, i) => sourceIndex.set(s.id, i + 1));
 
   const donationBase = process.env.DONATION_BASE_URL;
-  const giveHref = via && donationBase
-    ? `/api/track/click?code=${encodeURIComponent(via)}`
+  const useStripe = stripeConfigured();
+  const giveHref = via && (useStripe || donationBase)
+    ? (useStripe
+        ? `/api/donate/checkout?event=${slug}${via ? `&code=${encodeURIComponent(via)}` : ""}`
+        : `/api/track/click?code=${encodeURIComponent(via)}`)
     : donationBase
       ? donationBase
       : "#give";
@@ -61,6 +65,17 @@ export default async function EventPage({
               <>Human approval record pending</>
             )}
           </div>
+          {thanks ? (
+            <div className="donate-ask" style={{ marginTop: 14 }}>
+              <span className="k">Shukran 🤍</span>
+              <p>Your gift is <b>confirmed</b> and attributed to this event&apos;s chain — scroll down to see the number move.</p>
+            </div>
+          ) : null}
+          {canceled || donate_error ? (
+            <div className="chip chip-amber" style={{ marginTop: 12 }}>
+              {donate_error ? "The checkout could not start — please try again." : "Checkout canceled — the story is still here when you're ready."}
+            </div>
+          ) : null}
         </div>
 
         {detail.photo ? (
@@ -128,18 +143,34 @@ export default async function EventPage({
                 <li><span className="tick">✓</span><span>Gift attributed to <b>this event&apos;s chain</b>{via ? ` via your link` : ""}</span></li>
                 <li><span className="tick">✓</span><span>Confirmed only on payment reference — never estimated</span></li>
               </ul>
-              <a
-                className="btn btn-accent btn-lg"
-                style={{ width: "100%", justifyContent: "center" }}
-                href={giveHref}
-                aria-disabled={!donationBase}
-              >
-                Give now →
-              </a>
+              {useStripe ? (
+                <div style={{ display: "grid", gap: 8 }}>
+                  {[25, 50, 100].map((a) => (
+                    <a
+                      key={a}
+                      className="btn btn-accent"
+                      style={{ width: "100%", justifyContent: "center" }}
+                      href={`/api/donate/checkout?amount=${a}&event=${event.slug}${via ? `&code=${encodeURIComponent(via)}` : ""}`}
+                    >
+                      Give ${a} →
+                    </a>
+                  ))}
+                  <div className="via">test mode · card 4242 4242 4242 4242 · any future date · any CVC</div>
+                </div>
+              ) : (
+                <a
+                  className="btn btn-accent btn-lg"
+                  style={{ width: "100%", justifyContent: "center" }}
+                  href={giveHref}
+                  aria-disabled={!donationBase}
+                >
+                  Give now →
+                </a>
+              )}
               <div className="via">
                 {via
                   ? `attributed to share link /r/${via.toUpperCase()}`
-                  : donationBase
+                  : donationBase || useStripe
                     ? "direct — relay a link to attribute your gift"
                     : "donation campaign wiring pending (Layer 6)"}
               </div>
