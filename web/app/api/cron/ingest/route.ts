@@ -2,18 +2,21 @@ import { runIngest } from "@/lib/ingest";
 import * as Sentry from "@sentry/nextjs";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 300;
+export const maxDuration = 60; // Hobby-plan ceiling; Pro can raise it
 
 /**
- * Cron entry (Vercel cron sends no secret header pre-configured; we accept
- * ?secret= or Authorization: Bearer). Wire in vercel.json every 30 min.
+ * Cron entry. Vercel's scheduler (vercel.json, daily on the Hobby plan) sends
+ * `x-vercel-cron: 1` and cannot interpolate env vars into the path — so the
+ * platform header authorizes scheduled runs, while external callers use the
+ * shared secret. Bump the schedule to *\/30 and maxDuration with Vercel Pro.
  */
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const secret = process.env.CRON_SECRET;
   const provided =
     url.searchParams.get("secret") ?? req.headers.get("authorization")?.replace(/^Bearer /, "");
-  if (secret && provided !== secret) {
+  const platformCron = req.headers.get("x-vercel-cron") === "1";
+  if (!platformCron && secret && provided !== secret) {
     return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
   try {
