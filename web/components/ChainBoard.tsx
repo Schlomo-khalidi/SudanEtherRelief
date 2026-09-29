@@ -27,6 +27,7 @@ export function ChainBoard({ chain, lanes }: { chain: EventChainRow | null; lane
       </div>
 
       <div className="card lane-table">
+        <div className="table-scroll">
         <table className="data">
           <thead>
             <tr>
@@ -65,6 +66,7 @@ export function ChainBoard({ chain, lanes }: { chain: EventChainRow | null; lane
             )}
           </tbody>
         </table>
+        </div>
         <div className="chain-foot">
           <span>
             Donations marked <b>confirmed</b> come from payment references or approved reconciliation — never estimates.

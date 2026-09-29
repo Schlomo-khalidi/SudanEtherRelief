@@ -106,6 +106,7 @@ export default async function ReconcilePage({
         </div>
 
         <div className="card" style={{ marginTop: 20 }}>
+          <div className="table-scroll">
           <table className="data">
             <thead>
               <tr><th>Ref</th><th>Event</th><th>Amount</th><th>Method</th><th>Status</th><th>Confirmed at</th></tr>
@@ -130,6 +131,7 @@ export default async function ReconcilePage({
               )}
             </tbody>
           </table>
+          </div>
         </div>
       </main>
     </AdminShell>

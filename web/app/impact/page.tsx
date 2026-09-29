@@ -128,6 +128,7 @@ export default async function ImpactPage() {
         <section style={{ marginTop: 26 }}>
           <div className="section-label">Events on the record</div>
           <div className="card">
+            <div className="table-scroll">
             <table className="data">
               <thead>
                 <tr><th>Event</th><th>Lanes</th><th>Relayers</th><th>Views</th><th>Clicks</th><th>Confirmed</th><th>Pending</th></tr>
@@ -156,7 +157,8 @@ export default async function ImpactPage() {
                   <tr><td colSpan={7} style={{ color: "var(--ink-3)" }}>No approved events yet.</td></tr>
                 ) : null}
               </tbody>
-            </table>
+              </table>
+            </div>
           </div>
         </section>
 
@@ -165,6 +167,7 @@ export default async function ImpactPage() {
           <section>
             <div className="section-label">Top lanes — who moves the story</div>
             <div className="card" style={{ padding: "6px 0" }}>
+              <div className="table-scroll">
               <table className="data">
                 <thead>
                   <tr><th>Lane</th><th>Views</th><th>Clicks</th><th>Confirmed</th><th style={{ width: 120 }}>Share of views</th></tr>
@@ -189,6 +192,7 @@ export default async function ImpactPage() {
                   )}
                 </tbody>
               </table>
+              </div>
             </div>
           </section>
 
@@ -196,6 +200,7 @@ export default async function ImpactPage() {
           <section>
             <div className="section-label">Relayer leaderboard — opt-in</div>
             <div className="card" style={{ padding: "6px 0" }}>
+              <div className="table-scroll">
               <table className="data">
                 <thead>
                   <tr><th>Relayer</th><th>Events</th><th>Views</th><th>Confirmed</th></tr>
@@ -217,6 +222,7 @@ export default async function ImpactPage() {
                   )}
                 </tbody>
               </table>
+              </div>
             </div>
             <p style={{ fontSize: 11.5, color: "var(--ink-3)", marginTop: 8 }}>
               Relayers appear here only if they opted in. Every figure traces back to their tracked

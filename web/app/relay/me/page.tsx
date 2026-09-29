@@ -229,6 +229,7 @@ export default async function RelayDashboard({
               {myLinks.length === 0 ? (
                 <p style={{ fontSize: 12.5, color: "var(--ink-3)" }}>No links yet — carry your first story on the left.</p>
               ) : (
+                <div className="table-scroll">
                 <table className="data mini-table">
                   <thead><tr><th>Code</th><th>Event</th><th>V/C</th><th>$</th></tr></thead>
                   <tbody>
@@ -246,6 +247,7 @@ export default async function RelayDashboard({
                     ))}
                   </tbody>
                 </table>
+                </div>
               )}
             </Card>
 

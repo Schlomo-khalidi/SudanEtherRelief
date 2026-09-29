@@ -178,7 +178,12 @@ a { color: inherit; }
 
   /* wide tables scroll inside their card instead of poking out of it */
   .card { overflow: hidden; }
-  table.data { display: block; width: max-content; min-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-scroll table.data {
+    display: table; width: 720px; table-layout: fixed;
+  }
+  .table-scroll table.data th:first-child,
+  .table-scroll table.data td:first-child { width: 210px; overflow-wrap: normal; }
 }
 
 /* ---------- buttons ---------- */
