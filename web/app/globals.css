@@ -197,6 +197,7 @@ table.data tr:last-child td { border-bottom: 0; }
 .filter {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
   border: 1px solid var(--line); background: #fff; color: var(--ink-2); border-radius: 999px; padding: 7px 14px;
+  text-decoration: none; cursor: pointer;
 }
 .filter.on { background: var(--ink); color: #fff; border-color: var(--ink); }
 .filters .count { margin-left: auto; color: var(--ink-3); font-size: 12px; }

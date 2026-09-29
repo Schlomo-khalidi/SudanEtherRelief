@@ -2,12 +2,29 @@ import Link from "next/link";
 import { TopBar, BroadcastIcon } from "@/components/Brand";
 import { EventCard } from "@/components/EventCard";
 import { getFeedData } from "@/lib/queries";
+import { TOPIC_CHIPS, isTopicSlug, topicsFor } from "@/lib/topics";
 import { money, num } from "@/lib/format";
+import type { EventCardData } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
-export default async function FeedPage() {
+export default async function FeedPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ topic?: string }>;
+}) {
+  const { topic: rawTopic } = await searchParams;
+  const topic = isTopicSlug(rawTopic) ? rawTopic : null;
   const { cards, global } = await getFeedData();
+
+  const withTags = cards.map((card) => ({
+    ...card,
+    tags: topicsFor(
+      card.event,
+      `${(card.pack?.claims ?? []).map((c) => c.text).join(" ")} ${card.event.explainer_what ?? ""}`,
+    ),
+  }));
+  const visible = topic ? withTags.filter((c) => c.tags.includes(topic)) : withTags;
 
   return (
     <>
@@ -44,22 +61,29 @@ export default async function FeedPage() {
         </div>
 
         <div className="filters">
-          <span className="filter on">All</span>
-          <span className="filter">Sudan</span>
-          <span className="filter">East Africa</span>
-          <span className="filter">Famine &amp; food</span>
-          <span className="filter">Health</span>
-          <span className="filter">Displacement</span>
-          <span className="count">Showing {cards.length} approved event{cards.length === 1 ? "" : "s"}</span>
+          <Link href="/" className={`filter${topic === null ? " on" : ""}`}>All</Link>
+          {TOPIC_CHIPS.map((chip) => (
+            <Link
+              key={chip.slug}
+              href={topic === chip.slug ? "/" : `/?topic=${chip.slug}`}
+              className={`filter${topic === chip.slug ? " on" : ""}`}
+            >
+              {chip.label}
+            </Link>
+          ))}
+          <span className="count">
+            Showing {visible.length} of {cards.length} approved event{cards.length === 1 ? "" : "s"}
+            {topic ? ` · ${TOPIC_CHIPS.find((c) => c.slug === topic)!.label}` : ""}
+          </span>
         </div>
 
         <div className="feed">
-          {cards.length === 0 ? (
+          {visible.length === 0 ? (
             <div className="card card-pad" style={{ color: "var(--ink-2)" }}>
-              No approved events yet — the newsroom is reviewing the first drafts.
+              Nothing under this topic yet — new stories land as the wires report them.
             </div>
           ) : (
-            cards.map((data) => <EventCard key={data.event.id} data={data} />)
+            visible.map((data) => <EventCard key={data.event.id} data={data} />)
           )}
         </div>
 
