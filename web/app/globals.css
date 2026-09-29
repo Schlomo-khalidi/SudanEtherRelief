@@ -67,15 +67,23 @@ a { color: inherit; }
   .brand-name { font-size: 16px; }
   .brand svg { width: 26px; height: 26px; }
   .topbar-right { margin-left: auto; }
-  .topbar-right .btn { padding: 7px 12px; font-size: 12px; }
+  .topbar-right .btn {
+    border-radius: 999px; padding: 10px 14px; font-size: 13px; gap: 7px;
+    box-shadow: 0 6px 18px rgba(232, 68, 46, .35);
+  }
   .topnav {
     order: 3; width: 100%; margin: 8px -18px 0; padding: 0 18px;
-    gap: 18px; overflow-x: auto; scrollbar-width: none;
+    justify-content: space-between; gap: 0; overflow-x: auto; scrollbar-width: none;
     border-top: 1px solid rgba(255, 255, 255, .1);
   }
   .topnav::-webkit-scrollbar { display: none; }
-  .topnav a { padding: 9px 2px 7px; white-space: nowrap; font-size: 12.5px; }
-  .topnav a.active { padding-bottom: 5px; }
+  .topnav a { padding: 11px 2px 9px; white-space: nowrap; font-size: 15px; font-weight: 600; color: #b9b3dd; }
+  .topnav a.active { color: #fff; border-bottom: 3px solid var(--accent); border-radius: 1px; padding-bottom: 6px; }
+
+  /* live stats: tidy two-up grid with dividers */
+  .livebar-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; padding: 16px 0 18px; }
+  .live-item { padding-left: 16px; border-left: 1px solid rgba(255, 255, 255, .14); }
+  .live-item:nth-child(2n + 1) { border-left: 0; padding-left: 0; }
 
   /* CTA band stacks cleanly */
   .band-inner { flex-direction: column; align-items: center; gap: 12px; padding: 28px 24px 30px; text-align: center; }
@@ -168,8 +176,11 @@ table.data tr:last-child td { border-bottom: 0; }
 .ticker {
   background: var(--accent); color: #fff;
   font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em;
-  text-transform: uppercase; padding: 7px 0; text-align: center;
+  text-transform: uppercase;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 6px 10px; padding: 8px 14px;
 }
+.ticker b { font-weight: 700; letter-spacing: .14em; }
 .livebar { background: var(--ink); color: #fff; border-top: 1px solid rgba(255,255,255,.08); }
 .livebar-inner { display: flex; justify-content: space-between; padding: 14px 0; flex-wrap: wrap; gap: 10px; }
 .live-item { display: flex; flex-direction: column; gap: 2px; }

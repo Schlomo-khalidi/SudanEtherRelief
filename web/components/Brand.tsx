@@ -53,6 +53,61 @@ const NAV_ITEMS = [
   },
 ];
 
+export function BroadcastIcon({ size = 17 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="3.1" fill="#fff" />
+      <path
+        d="M7.2 7.2a6.8 6.8 0 000 9.6"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="1.9"
+        strokeLinecap="round"
+      />
+      <path
+        d="M16.8 7.2a6.8 6.8 0 010 9.6"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="1.9"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function MegaphoneIcon({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M3 10.2v3.6c0 .6.4 1.1 1 1.1h2.2l4.3 3.9c.6.6 1.5.1 1.5-.7V5.9c0-.8-.9-1.3-1.5-.7L6.2 9.1H4c-.6 0-1 .5-1 1.1z"
+        fill="#fff"
+      />
+      <path
+        d="M15.2 9a4.4 4.4 0 010 6"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      <path
+        d="M17.8 6.5a8 8 0 010 11"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ChevronRight() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 5.5l6.5 6.5L9 18.5" fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function TopBar() {
   const pathname = usePathname();
 
@@ -69,8 +124,9 @@ export function TopBar() {
         </nav>
         <div className="topbar-right">
           <a className="btn btn-accent" href="/relay">
-            <span className="hide-sm">Relay this news</span>
-            <span className="show-sm">Relay</span>
+            <MegaphoneIcon />
+            Relay this news
+            <ChevronRight />
           </a>
         </div>
       </div>

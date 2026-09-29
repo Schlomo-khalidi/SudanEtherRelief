@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { TopBar } from "@/components/Brand";
+import { TopBar, BroadcastIcon } from "@/components/Brand";
 import { EventCard } from "@/components/EventCard";
 import { getFeedData } from "@/lib/queries";
 import { money, num } from "@/lib/format";
@@ -12,7 +12,11 @@ export default async function FeedPage() {
   return (
     <>
       <div className="ticker">
-        Live — {global.events} approved event{global.events === 1 ? "" : "s"} · every link attributed, every claim sourced
+        <BroadcastIcon />
+        <b>LIVE</b>
+        <span>
+          — {global.events} approved event{global.events === 1 ? "" : "s"} · every link attributed, every claim sourced
+        </span>
       </div>
 
       <TopBar />
