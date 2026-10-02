@@ -75,6 +75,30 @@ export async function signOutRelayer() {
   redirect("/relay");
 }
 
+/** Returning relayer: email-only sign-in (optionally attach to a lane). */
+export async function signIn(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!email) redirect("/relay?mode=signin&e=1");
+  const dbi = db();
+  const { data: relayer } = await dbi.from("relayers").select("id").eq("email", email).maybeSingle();
+  if (!relayer) redirect("/relay?mode=signin&e=2");
+  const laneId = String(formData.get("laneId") ?? "");
+  if (laneId) {
+    await dbi.from("lane_members").upsert(
+      { relayer_id: relayer.id, lane_id: laneId },
+      { onConflict: "relayer_id,lane_id" },
+    );
+  }
+  const jar = await cookies();
+  jar.set(RELAYER_COOKIE, await makeRelayerToken(relayer.id), {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  });
+  redirect("/relay/me");
+}
+
 /** Carry a story: create (or reuse) this relayer's tracked link for an event. */
 export async function relayEvent(formData: FormData) {
   const rid = await relayerId();

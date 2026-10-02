@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { join } from "@/app/relay/actions";
+import { join, signIn } from "@/app/relay/actions";
 import { TopBar } from "@/components/Brand";
 import { Card, Chip, SectionLabel } from "@/components/ui";
 import { getRelayerId } from "@/lib/relayer-auth";
@@ -10,9 +10,10 @@ export const dynamic = "force-dynamic";
 export default async function RelayPage({
   searchParams,
 }: {
-  searchParams: Promise<{ e?: string }>;
+  searchParams: Promise<{ e?: string; mode?: string }>;
 }) {
-  const { e } = await searchParams;
+  const { e, mode } = await searchParams;
+  const signin = mode === "signin";
   if (await getRelayerId()) redirect("/relay/me");
 
   const anon = supabasePublic();
@@ -40,31 +41,51 @@ export default async function RelayPage({
               and a link that is yours alone. When people act, your chain shows exactly what moved.
             </p>
           </div>
-          <form action={join} className="join-card" id="join">
-            <div className="section-label" style={{ marginBottom: 10 }}>Join a lane</div>
-            {e ? (
-              <div className="chip chip-red" style={{ marginBottom: 10 }}>Something was missing — try again</div>
-            ) : null}
-            <input name="name" placeholder="Your name" required />
-            <input name="email" type="email" placeholder="Your email (identifies your dashboard)" required />
-            <select name="laneId" defaultValue="">
-              <option value="" disabled>
-                Pick your relay lane…
-              </option>
-              {laneList.map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.name}
+          {signin ? (
+            <form className="join-card" action={signIn}>
+              <div className="section-label" style={{ marginBottom: 10 }}>Sign in</div>
+              {e === "2" ? (
+                <div className="chip chip-red" style={{ marginBottom: 10 }}>No relayer with that email — join below</div>
+              ) : e ? (
+                <div className="chip chip-red" style={{ marginBottom: 10 }}>Enter your email to continue</div>
+              ) : null}
+              <input name="email" type="email" placeholder="Your email" required />
+              <button className="btn btn-accent btn-lg" style={{ width: "100%", justifyContent: "center" }} type="submit">
+                Sign in →
+              </button>
+              <p className="mono" style={{ fontSize: 9, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginTop: 10, textAlign: "center" }}>
+                New here?{" "}
+                <a href="/relay" style={{ color: "var(--accent-dark)" }}>Join a lane</a>
+              </p>
+            </form>
+          ) : (
+            <form action={join} className="join-card" id="join">
+              <div className="section-label" style={{ marginBottom: 10 }}>Join a lane</div>
+              {e ? (
+                <div className="chip chip-red" style={{ marginBottom: 10 }}>Something was missing — try again</div>
+              ) : null}
+              <input name="name" placeholder="Your name" required />
+              <input name="email" type="email" placeholder="Your email (identifies your dashboard)" required />
+              <select name="laneId" defaultValue="">
+                <option value="" disabled>
+                  Pick your relay lane…
                 </option>
-              ))}
-            </select>
-            <input name="newLane" placeholder="…or start a new lane (group, masjid, cohort)" />
-            <button className="btn btn-accent btn-lg" style={{ width: "100%", justifyContent: "center" }} type="submit">
-              Become a relayer →
-            </button>
-            <p className="mono" style={{ fontSize: 9, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginTop: 10, textAlign: "center" }}>
-              Email is only used to identify your dashboard — no spam, ever
-            </p>
-          </form>
+                {laneList.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.name}
+                  </option>
+                ))}
+              </select>
+              <input name="newLane" placeholder="…or start a new lane (group, masjid, cohort)" />
+              <button className="btn btn-accent btn-lg" style={{ width: "100%", justifyContent: "center" }} type="submit">
+                Become a relayer →
+              </button>
+              <p className="mono" style={{ fontSize: 9, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginTop: 10, textAlign: "center" }}>
+                Email is only used to identify your dashboard — no spam, ever ·{" "}
+                <a href="/relay?mode=signin" style={{ color: "var(--accent-dark)" }}>Already carrying? Sign in</a>
+              </p>
+            </form>
+          )}
         </div>
       </div>
 
