@@ -107,6 +107,12 @@ Each person's 5 minutes:
 person, one diaspora WhatsApp admin, one creator with even 2k followers. 10–20
 relayers posting the same story the same day is what the Reach score is made of.
 
+**Decision (confirmed):** no manual relayer lists — every relayer self-serves at
+`/relay` on their phone (name + email + lane, 30 seconds). Their signup creates
+their profile and dashboard live; placeholder relayers stay as demo filler until
+pruned before submission. Lane hygiene: real group names only in the "start a new
+lane" box — junk test lanes get removed on request.
+
 - [ ] All five founding relayers signed up on `/relay` (not just seeded)
 - [ ] Each posted at least one kit this week
 - [ ] 5–15 more recruited (campus / mosque / diaspora / creator)
