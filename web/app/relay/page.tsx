@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { join, signIn } from "@/app/relay/actions";
 import { TopBar } from "@/components/Brand";
@@ -80,9 +81,15 @@ export default async function RelayPage({
               <button className="btn btn-accent btn-lg" style={{ width: "100%", justifyContent: "center" }} type="submit">
                 Become a relayer →
               </button>
+              <Link
+                className="btn btn-outline btn-lg"
+                style={{ width: "100%", justifyContent: "center" }}
+                href="/relay?mode=signin"
+              >
+                Already carrying? Sign in
+              </Link>
               <p className="mono" style={{ fontSize: 9, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginTop: 10, textAlign: "center" }}>
-                Email is only used to identify your dashboard — no spam, ever ·{" "}
-                <a href="/relay?mode=signin" style={{ color: "var(--accent-dark)" }}>Already carrying? Sign in</a>
+                Email is only used to identify your dashboard — no spam, ever
               </p>
             </form>
           )}
