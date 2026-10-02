@@ -1,4 +1,5 @@
 import { supabaseAdmin, supabasePublic } from "@/lib/supabase/server";
+import { libraryImagery } from "@/lib/imagery";
 import type {
   DecisionRow,
   EventChainRow,
@@ -98,7 +99,8 @@ export type EventDetail = {
   approval: { actor: string; at: string } | null;
   chain: EventChainRow | null;
   lanes: LaneChainRow[];
-  photo: { storage_path: string; caption: string; credit: string } | null;
+  /** field asset when attached; otherwise a topic-matched library image */
+  photo: { path: string; caption: string; credit: string; library: boolean } | null;
 };
 
 export async function getEventDetail(slug: string): Promise<EventDetail | null> {
@@ -129,6 +131,9 @@ export async function getEventDetail(slug: string): Promise<EventDetail | null> 
   ]);
 
   const photoRow = (photoRes.data ?? null) as { storage_path: string; meta: { caption?: string; credit?: string } } | null;
+  const photo = photoRow
+    ? { path: photoRow.storage_path, caption: photoRow.meta?.caption ?? "Ethar Relief field photo", credit: photoRow.meta?.credit ?? "Ethar Relief", library: false }
+    : libraryImagery(e, `${e.headline} ${e.explainer_what ?? ""}`);
 
   return {
     event: e,
@@ -140,13 +145,7 @@ export async function getEventDetail(slug: string): Promise<EventDetail | null> 
     })(),
     chain: (chainRes.data ?? null) as EventChainRow | null,
     lanes: (lanesRes.data ?? []) as LaneChainRow[],
-    photo: photoRow
-      ? {
-          storage_path: photoRow.storage_path,
-          caption: photoRow.meta?.caption ?? "Ethar Relief field photo",
-          credit: photoRow.meta?.credit ?? "Ethar Relief",
-        }
-      : null,
+    photo,
   };
 }
 

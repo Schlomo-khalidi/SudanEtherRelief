@@ -1,7 +1,7 @@
 import { reconcile } from "@/app/admin/actions";
 import { AdminShell } from "@/app/admin/AdminShell";
 import { supabaseAdmin } from "@/lib/supabase/server";
-import { money } from "@/lib/format";
+import { maskRef, money } from "@/lib/format";
 import type { EventRow } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -119,7 +119,7 @@ export default async function ReconcilePage({
                   const ev = Array.isArray(r.events) ? r.events[0] : r.events;
                   return (
                     <tr key={r.id}>
-                      <td className="mono">{r.external_ref ?? "—"}</td>
+                      <td className="mono" title={r.external_ref ?? ""}>{maskRef(r.external_ref)}</td>
                       <td>{ev?.slug ?? "—"}</td>
                       <td><b>{money(r.amount)}</b> {r.currency}</td>
                       <td className="mono" style={{ fontSize: 11 }}>{r.method}</td>

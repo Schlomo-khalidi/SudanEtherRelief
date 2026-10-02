@@ -20,7 +20,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   ).filter((f): f is NonNullable<typeof f> => f !== null);
 
   let photoSrc: string | null = null;
-  const photoPath = detail?.photo?.storage_path;
+  const photoPath = detail?.photo?.path;
   if (photoPath) {
     try {
       const buf = await readFile(join(process.cwd(), "public", photoPath.replace(/^\//, "")));
@@ -43,9 +43,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
         }}
       >
         {photoSrc ? (
-          <div style={{ display: "flex", height: 620, position: "relative" }}>
+          <div style={{ display: "flex", height: 760, position: "relative" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={photoSrc} width={1080} height={620} style={{ objectFit: "cover" }} />
+            <img src={photoSrc} width={1080} height={760} style={{ objectFit: "cover" }} />
             <div
               style={{
                 position: "absolute",
@@ -60,7 +60,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
                 borderRadius: 8,
               }}
             >
-              ETHAR FIELD ASSET
+              ETHAR RELIEF
             </div>
           </div>
         ) : (
@@ -82,7 +82,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
             </div>
           </div>
 
-          <div style={{ fontFamily: "Fraunces", fontWeight: 600, fontSize: 58, lineHeight: 1.12, marginTop: 40 }}>
+          <div style={{ fontFamily: "Fraunces", fontWeight: 600, fontSize: 66, lineHeight: 1.14, marginTop: 44 }}>
             {headline}
           </div>
           <div style={{ fontFamily: "IBM Plex Mono", fontSize: 20, letterSpacing: 2, color: "#ff8a75", marginTop: 24 }}>
@@ -91,27 +91,27 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
 
           <div style={{ display: "flex", alignItems: "flex-end", marginTop: "auto", gap: 30 }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <b style={{ fontFamily: "Fraunces", fontSize: 34 }}>{views}</b>
-              <span style={{ fontFamily: "IBM Plex Mono", fontSize: 13, letterSpacing: 2, color: "#9d96c9" }}>TRACKED VIEWS</span>
+              <b style={{ fontFamily: "Fraunces", fontSize: 48 }}>{views}</b>
+              <span style={{ fontFamily: "IBM Plex Mono", fontSize: 16, letterSpacing: 2, color: "#9d96c9" }}>TRACKED VIEWS</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <b style={{ fontFamily: "Fraunces", fontSize: 34, color: "#7fd3a8" }}>
+              <b style={{ fontFamily: "Fraunces", fontSize: 48, color: "#7fd3a8" }}>
                 {`$${Math.round(Number(confirmed)).toLocaleString("en-US")}`}
               </b>
-              <span style={{ fontFamily: "IBM Plex Mono", fontSize: 13, letterSpacing: 2, color: "#9d96c9" }}>CONFIRMED DONATED</span>
+              <span style={{ fontFamily: "IBM Plex Mono", fontSize: 16, letterSpacing: 2, color: "#9d96c9" }}>CONFIRMED DONATED</span>
             </div>
             <div
               style={{
                 marginLeft: "auto",
                 background: "#e8442e",
-                borderRadius: 14,
-                padding: "16px 24px",
+                borderRadius: 16,
+                padding: "24px 32px",
                 display: "flex",
                 flexDirection: "column",
               }}
             >
-              <b style={{ fontFamily: "Fraunces", fontSize: 21 }}>{`See the sources. Give if moved.`}</b>
-              <span style={{ fontFamily: "IBM Plex Mono", fontSize: 13, color: "#ffd9d1", letterSpacing: 1 }}>
+              <b style={{ fontFamily: "Fraunces", fontSize: 27 }}>{`See the sources. Give if moved.`}</b>
+              <span style={{ fontFamily: "IBM Plex Mono", fontSize: 15, color: "#ffd9d1", letterSpacing: 1 }}>
                 {`WITH ETHAR RELIEF`}
               </span>
             </div>

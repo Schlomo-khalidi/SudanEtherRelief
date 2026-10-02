@@ -16,6 +16,8 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
   const relayers = num(detail?.chain?.relayers_count ?? 0);
   const confirmed = money(detail?.chain?.confirmed_amount ?? 0);
 
+  const headlineSize = headline.length > 110 ? 42 : headline.length > 70 ? 50 : 60;
+
   const fonts = (
     await Promise.all([loadOgFont("Fraunces", 600), loadOgFont("IBM Plex Mono", 500)])
   ).filter((f): f is NonNullable<typeof f> => f !== null);
@@ -49,11 +51,11 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", marginTop: 44, height: "100%" }}>
-          <div style={{ fontFamily: "Fraunces", fontWeight: 600, fontSize: 60, lineHeight: 1.1, maxWidth: 980 }}>
+        <div style={{ display: "flex", flexDirection: "column", marginTop: 32, flex: 1 }}>
+          <div style={{ fontFamily: "Fraunces", fontWeight: 600, fontSize: headlineSize, lineHeight: 1.08, maxWidth: 980 }}>
             {headline}
           </div>
-          <div style={{ fontFamily: "IBM Plex Mono", fontSize: 18, letterSpacing: 2, color: "#ff8a75", marginTop: 26 }}>
+          <div style={{ fontFamily: "IBM Plex Mono", fontSize: 18, letterSpacing: 2, color: "#ff8a75", marginTop: 18 }}>
             {place}
           </div>
 

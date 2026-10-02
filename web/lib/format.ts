@@ -23,3 +23,11 @@ export function money(n: number | null | undefined): string {
 export function num(n: number | null | undefined): string {
   return Number(n ?? 0).toLocaleString("en-US");
 }
+
+/** Long processor ids (e.g. Stripe cs_test_…) display masked; the full value
+ *  stays in the database and in the title attribute. */
+export function maskRef(v: string | null | undefined): string {
+  if (!v) return "—";
+  if (v.length <= 18) return v;
+  return v.slice(0, 11) + "**" + v.slice(-4);
+}
