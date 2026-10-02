@@ -138,9 +138,10 @@ ${open.map((o) => `${o.slug} | ${o.headline}`).join("\n") || "(none)"}`;
           event_id: eventId,
           actor: "system",
           action: "note",
-          note: `ingest attached ${fresh.length} new source(s) (${clusterItems[0].outlet}…), queued for re-review`,
+          note: `ingest attached ${fresh.length} new source(s) (${clusterItems[0].outlet}…) for the editor's next review`,
         });
-        await db.from("events").update({ status: "in_review" }).eq("id", eventId);
+        // NEW SOURCES NEVER UNPUBLISH: approved stories stay live; the editor
+        // sees the attached sources in the decision log and can pause manually.
         summary.attached += fresh.length;
       }
       continue;

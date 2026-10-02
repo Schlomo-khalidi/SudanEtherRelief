@@ -31,13 +31,16 @@ export default async function EventPage({
 
   const donationBase = process.env.DONATION_BASE_URL;
   const useStripe = stripeConfigured();
-  const giveHref = via && (useStripe || donationBase)
-    ? (useStripe
-        ? `/api/donate/checkout?event=${slug}${via ? `&code=${encodeURIComponent(via)}` : ""}`
-        : `/api/track/click?code=${encodeURIComponent(via)}`)
+  // LaunchGood (the real Ethar campaign) is the primary Give path — real money
+  // to the cause; the Stripe test checkout stays available as the demo sandbox
+  // when no campaign URL is configured.
+  const giveHref = via && donationBase
+    ? `/api/track/click?code=${encodeURIComponent(via)}`
     : donationBase
       ? donationBase
-      : "#give";
+      : useStripe
+        ? `/api/donate/checkout?event=${slug}`
+        : "#give";
 
   return (
     <>
@@ -145,7 +148,15 @@ export default async function EventPage({
                 <li><span className="tick">✓</span><span>Gift attributed to <b>this event&apos;s chain</b>{via ? ` via your link` : ""}</span></li>
                 <li><span className="tick">✓</span><span>Confirmed only on payment reference — never estimated</span></li>
               </ul>
-              {useStripe ? (
+              {donationBase ? (
+                <a
+                  className="btn btn-accent btn-lg"
+                  style={{ width: "100%", justifyContent: "center" }}
+                  href={giveHref}
+                >
+                  Give via LaunchGood →
+                </a>
+              ) : useStripe ? (
                 <div style={{ display: "grid", gap: 8 }}>
                   {[25, 50, 100].map((a) => (
                     <a
