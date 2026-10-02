@@ -1,53 +1,141 @@
-# L9 — Highlight Video Script (45 seconds)
+# L9 — Highlight Video Script (60–63 seconds)
 
-**Goal:** pitch the impact when you're not in the room. Judges watch this before
-they ever click the link — it must show the loop working, with real numbers.
+A word-for-word script: what to record, what to say, and what appears on screen.
+The whole story in one take-worth of material — the idea, the AI, the newsroom,
+the relay, the money, the proof.
 
-**Golden rule:** record against the **live Vercel URL**, not localhost. Refresh every
-page right before its take so the numbers are current — and keep them consistent
-between takes.
-
----
-
-## Pre-flight (10 minutes)
-
-- [ ] Desktop browser: clean profile, **hide bookmarks bar** (Ctrl+Shift+B), zoom 100%
-- [ ] Record at **1920×1080** (OBS is free) — phone shots via your phone's screen recorder
-- [ ] Live site open: feed, `/admin` (signed in as Gasser), `/relay`, event page, `/impact`
-- [ ] One fresh donation ready to fire live (Stripe test card `4242 4242 4242 4242`,
-      any future date, CVC 123) — the confetti beat is your emotional peak
-- [ ] Phone in hand for the relay shot — a real hand beats an emulator
-- [ ] Music: something restrained (soft oud / ambient vocal), drop it -18db under the VO
+**Payment note:** the recorded Give flow uses the Stripe sandbox (clearly labeled
+"test mode" on the page). In the script, the narrator says it plainly — and says
+that at launch, Give routes through Ethar's LaunchGood campaign. One environment
+variable flips production to LaunchGood; the code is already wired for it.
 
 ---
 
-## The script
+## Pre-flight
 
-| Time | On screen | Action to record | Voiceover | Text overlay |
-|---|---|---|---|---|
-| **0:00–0:05** | Hero card — the Sudan flag over the camp | Slow scroll-in on the landing hero, hold on the headline | "When Sudan drops out of the news, giving stops. The need doesn't." | "When Sudan drops out of the news…" |
-| **0:05–0:13** | `/admin` newsroom | Click **⟳ Run ingest now** — a fresh AI draft appears in the queue with its sources. Then click **✓ Approve & publish** on a draft | "Witness Relay watches the wires around the clock. It drafts the story with every claim bound to its source — and nothing publishes until a human approves it." | "AI drafts · human approves · every claim sourced" |
-| **0:13–0:25** | Phone in hand: `/relay` | Pick the day's story → the kit appears (WhatsApp text, cards) → cut to your WhatsApp group with the card actually posted → tap the link | "Then we hand the story to the people with real communities — mosques, campuses, creators, diaspora. Every relayer gets a channel-ready kit and their own tracked link." | "mosques · campuses · creators · diaspora" |
-| **0:25–0:38** | Event page on desktop | Tap **Give $25** → Stripe checkout (fast-forward through the card fill) → the **Shukran + confetti** moment → scroll down: the chain board ticks **$106 → $131** | "Every view, every click, every confirmed donation — attributed in real time to the community that moved it. Not estimated. Proven." | "$131 confirmed · 4 gifts · tracked to the source" |
-| **0:38–0:45** | `/impact` board → hero card | Slow pan across the impact board, then end on the hero with the flag | "Witness Relay. News in. Donations out." | "sudanetherrelief.vercel.app — built for Ethar Relief · HabibiTech 2026" |
+- [ ] Record at **1920×1080**, clean browser profile, bookmarks bar hidden, zoom 100%
+- [ ] Live site open: landing page, `/admin` (signed in as Gasser), event page, `/relay` on your phone, `/impact`
+- [ ] One fresh Stripe test donation ready to fire live (card `4242 4242 4242 4242`,
+      any future date, CVC 123) — the confetti beat is the emotional peak
+- [ ] Phone in hand for the relay shots — a real hand beats an emulator
+- [ ] Music: restrained — soft oud or ambient vocal, sitting ~18db under the voice
+- [ ] Record the donation shot FIRST, while the numbers are freshest
 
-**Recording order tip:** film the 0:25–0:38 donation FIRST (it's the only shot with
-live state change — get it while the numbers are fresh), then everything else.
+---
+
+## THE SCRIPT
+
+### BEAT 1 — THE PROBLEM (0:00 – 0:06)
+
+**Visual:** slow push-in on the hero card — the Sudan flag over the camp, golden
+dust, the headline in cream. Hold.
+
+**Voiceover:**
+> "When Sudan drops out of the headlines, giving stops — while the need doesn't."
+
+**On screen:** "When Sudan drops out of the news…"
+
+---
+
+### BEAT 2 — THE AI NEWSROOM (0:06 – 0:15)
+
+**Visual:** `/admin`. Click **⟳ Run ingest now**. Watch a fresh AI draft drop into
+the queue. Flash the draft's claims — every line carrying its source pill. Then a
+quick cut: the Gemini JSON response, source-bound, on screen for a beat.
+
+**Voiceover:**
+> "Witness Relay is an AI newsroom built for Ethar Relief. Gemini reads the wires
+> on Sudan and East Africa around the clock, clusters the stories that matter, and
+> drafts them — with every single claim bound to its source. Nothing publishes on
+> its own."
+
+**On screen:** "Gemini · every claim source-bound"
+
+---
+
+### BEAT 3 — THE HUMAN GATE (0:15 – 0:24)
+
+**Visual:** same screen. Gasser clicks **✓ Approve & publish**. Cut to the live
+feed — the story appears, Witness Verified stamp, sources behind the card.
+
+**Voiceover:**
+> "But nothing publishes by itself. A human editor reviews every line — approve,
+> edit, or reject — and that decision is logged, forever."
+
+**On screen:** "human decision · logged on every story"
+
+---
+
+### BEAT 4 — THE RELAY (0:24 – 0:35)
+
+**Visual:** phone in hand. `/relay` — pick the day's story, the kit appears:
+WhatsApp text, share card, QR. Cut to the card actually sitting in a WhatsApp
+group. Then the tap — the event page opens, attributed.
+
+**Voiceover:**
+> "Approved stories become Witness Cards, handed to the people with real
+> communities — mosques, campuses, creators, diaspora. Each relayer gets a
+> channel-ready kit and a personal tracked link."
+
+**On screen:** "mosques · campuses · creators · diaspora — one tracked link each"
+
+---
+
+### BEAT 5 — THE MONEY, PROVEN (0:35 – 0:47)
+
+**Visual:** on the phone, tap **Give $25** → Stripe checkout (fast-forward through
+the card fill) → the **Shukran + confetti** moment → pan down: the chain board
+ticking up in real time. Cut to desktop `/impact` — the board, the lanes, the
+leaderboard.
+
+**Voiceover:**
+> "One tap and a donor is giving to Ethar. Every view, every click, every
+> confirmed donation flows back — attributed to the community that moved it.
+> Not estimated. Proven."
+
+**On screen:** "confirmed · attributed · tracked to the source"
+
+---
+
+### BEAT 6 — AT LAUNCH (0:47 – 0:55)
+
+**Visual:** `/admin/reconcile` — the donation confirmed on the record. Then the
+LaunchGood campaign page, one beat.
+
+**Voiceover:**
+> "The sandbox you just saw becomes real at launch — Give routes through Ethar's
+> own LaunchGood campaign, and every gift is reconciled against the chain."
+
+**On screen:** "at launch: Give → Ethar's LaunchGood campaign"
+
+---
+
+### BEAT 7 — THE CLOSE (0:55 – 0:63)
+
+**Visual:** back to the hero card — the flag. Slow zoom out. End frame: the seal,
+the name, the URL.
+
+**Voiceover:**
+> "Witness Relay. News in. Donations out. Sudan — back in the feed, and Ethar
+> funded because of it."
+
+**On screen:** "sudanetherrelief.vercel.app · Built for Ethar Relief — HabibiTech 2026"
 
 ---
 
 ## Edit notes
 
-- **Captions always on** — many judges watch muted. CapCut auto-captions are fine;
-  correct "Witness Relay" and "Ethar" manually.
-- Use the **confetti + Shukran** frame as your video thumbnail.
-- Keep cuts on the beat; never let a mouse cursor wander without purpose.
-- If a take fights you, remember the rule: the video pitches **impact**, not features —
-  cut anything that doesn't show Sudan getting seen or funded.
+- **Captions always on** — many judges watch muted. Auto-caption, then correct
+  "Witness Relay", "Ethar", and "LaunchGood" manually.
+- Cut on the music beat; the confetti frame lands on the drop.
+- The confetti + Shukran frame is your video thumbnail.
+- If any take fights you, cut it — every second must show Sudan getting seen,
+  approved, relayed, or funded.
 
 ## Submission checklist
 
-- [ ] Video exported 1080p, under 60s, captions burned in
+- [ ] Exported 1080p, 60–63 seconds, captions burned in
 - [ ] Link to the live product + video submitted at habibi.tech/brandathon
-- [ ] After submitting: keep the site up, keep relayers posting — you may keep
-      working until the deadline, and the live numbers only go up
+- [ ] Relayers primed: all five have posted at least one kit
+- [ ] After submitting: keep the site up — the pipeline keeps drafting and the
+      numbers keep climbing until you present

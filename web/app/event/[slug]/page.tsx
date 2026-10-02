@@ -31,16 +31,16 @@ export default async function EventPage({
 
   const donationBase = process.env.DONATION_BASE_URL;
   const useStripe = stripeConfigured();
-  // LaunchGood (the real Ethar campaign) is the primary Give path — real money
-  // to the cause; the Stripe test checkout stays available as the demo sandbox
-  // when no campaign URL is configured.
-  const giveHref = via && donationBase
-    ? `/api/track/click?code=${encodeURIComponent(via)}`
+  // Demo/submission path: the Stripe sandbox checkout (clearly labeled test mode).
+  // Production: Give routes to Ethar's LaunchGood campaign with ?ref= attribution —
+  // it takes over automatically the moment the sandbox key is removed.
+  const giveHref = useStripe
+    ? `/api/donate/checkout?event=${slug}${via ? `&code=${encodeURIComponent(via)}` : ""}`
     : donationBase
-      ? donationBase
-      : useStripe
-        ? `/api/donate/checkout?event=${slug}`
-        : "#give";
+      ? via
+        ? `/api/track/click?code=${encodeURIComponent(via)}`
+        : donationBase
+      : "#give";
 
   return (
     <>
@@ -148,15 +148,7 @@ export default async function EventPage({
                 <li><span className="tick">✓</span><span>Gift attributed to <b>this event&apos;s chain</b>{via ? ` via your link` : ""}</span></li>
                 <li><span className="tick">✓</span><span>Confirmed only on payment reference — never estimated</span></li>
               </ul>
-              {donationBase ? (
-                <a
-                  className="btn btn-accent btn-lg"
-                  style={{ width: "100%", justifyContent: "center" }}
-                  href={giveHref}
-                >
-                  Give via LaunchGood →
-                </a>
-              ) : useStripe ? (
+              {useStripe ? (
                 <div style={{ display: "grid", gap: 8 }}>
                   {[25, 50, 100].map((a) => (
                     <a
@@ -168,8 +160,16 @@ export default async function EventPage({
                       Give ${a} →
                     </a>
                   ))}
-                  <div className="via">test mode · card 4242 4242 4242 4242 · any future date · any CVC</div>
+                  <div className="via">sandbox demo · card 4242 4242 4242 4242 · at launch Give routes to Ethar&apos;s LaunchGood campaign</div>
                 </div>
+              ) : donationBase ? (
+                <a
+                  className="btn btn-accent btn-lg"
+                  style={{ width: "100%", justifyContent: "center" }}
+                  href={giveHref}
+                >
+                  Give via LaunchGood →
+                </a>
               ) : (
                 <a
                   className="btn btn-accent btn-lg"
