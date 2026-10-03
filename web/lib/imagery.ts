@@ -32,14 +32,18 @@ const LIBRARY: Entry[] = [
 const DEFAULT_ENTRY = {
   path: "/library/default.jpg",
   caption: "Ethar Relief in the field",
-  library: true as const,
 };
 
-export type LibraryImage = { path: string; caption: string; credit: string; library: true };
+export type LibraryImage = {
+  path: string;
+  caption: string;
+  credit: string;
+  kind: "library";
+};
 
 export function libraryImagery(event: EventRow, bodyText: string): LibraryImage | null {
   const hay = `${event.headline} ${event.location_label ?? ""} ${bodyText}`;
   const hit = LIBRARY.find((l) => l.re.test(hay));
-  if (!hit) return { ...DEFAULT_ENTRY, credit: "Ethar Relief" };
-  return { path: hit.path, caption: hit.caption, credit: "Ethar Relief", library: true as const };
+  if (!hit) return { ...DEFAULT_ENTRY, credit: "Ethar Relief", kind: "library" as const };
+  return { path: hit.path, caption: hit.caption, credit: "Ethar Relief", kind: "library" as const };
 }

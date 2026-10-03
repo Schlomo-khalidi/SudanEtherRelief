@@ -2,6 +2,7 @@ import { z } from "zod";
 import { llmJson, llmConfigured } from "@/lib/llm";
 import { fetchAllItems, normalizeTitle, type RawItem } from "@/lib/sources";
 import { supabaseAdmin } from "@/lib/supabase/server";
+import { storeEventImage } from "@/lib/storage";
 
 /**
  * Layer 2 pipeline: fetch → dedupe → cluster → draft.
@@ -38,6 +39,7 @@ const DraftSchema = z.object({
   confidence: z.number().min(0).max(1),
   whyItMatters: z.string(),
   claims: z.array(z.object({ text: z.string(), sourceIdx: z.array(z.number()).min(1) })).min(1),
+  imageSourceIdx: z.number().int().min(0).nullable().optional(),
 });
 
 export async function runIngest(): Promise<IngestSummary> {
@@ -159,7 +161,9 @@ RULES:
 ITEMS:
 ${clusterItems.map((it, i) => `SOURCE ${i} | ${it.outlet} | ${it.published ?? "recent"} | ${it.title}\n${it.snippet}`).join("\n\n")}
 
-Return JSON only: {"headline":"...","location":"...","confidence":0.0-1.0,"whyItMatters":"...","claims":[{"text":"...","sourceIdx":[numbers]}]}`;
+Return JSON only: {"headline":"...","location":"...","confidence":0.0-1.0,"whyItMatters":"...","imageSourceIdx":number-or-null,"claims":[{"text":"...","sourceIdx":[numbers]}]}
+
+imageSourceIdx: if one of the items carries a photo that best represents this story, return that item's index; otherwise null. Choose only from items with photo: yes.`;
 
     let draft: z.infer<typeof DraftSchema>;
     try {
@@ -235,6 +239,34 @@ Return JSON only: {"headline":"...","location":"...","confidence":0.0-1.0,"whyIt
       note: `AI draft from ${clusterItems.length} sources · every claim source-bound · awaiting Gasser`,
     });
 
+    // imagery: the story's own photo — the source Gemini picked, else the
+    // first cluster item that carries one — downloaded and stored with credit
+    const withImages = clusterItems
+      .map((it, idx) => ({ idx, imageUrl: it.imageUrl, outlet: it.outlet, title: it.title }))
+      .filter((c): c is { idx: number; imageUrl: string; outlet: string; title: string } => Boolean(c.imageUrl));
+    if (withImages.length > 0) {
+      const pickIdx =
+        draft.imageSourceIdx != null &&
+        clusterItems[draft.imageSourceIdx]?.imageUrl
+          ? draft.imageSourceIdx
+          : withImages[0].idx;
+      const picked = withImages.find((c) => c.idx === pickIdx) ?? withImages[0];
+      const publicUrl = await storeEventImage(picked.imageUrl, slug);
+      if (publicUrl) {
+        await db.from("assets").insert({
+          event_id: ev!.id,
+          kind: "feed",
+          language: "en",
+          storage_path: publicUrl,
+          meta: {
+            caption: picked.title.slice(0, 140),
+            credit: picked.outlet,
+            sourceUrl: picked.imageUrl,
+          },
+        });
+      }
+    }
+
     summary.newEvents.push({ slug, headline: draft.headline, sources: clusterItems.length });
   }
 
@@ -249,5 +281,6 @@ function sourceRow(it: RawItem) {
     quote: it.snippet || it.title,
     published_at: it.published,
     is_field_report: /ethar|field memo/i.test(it.outlet),
+    image_url: it.imageUrl,
   };
 }

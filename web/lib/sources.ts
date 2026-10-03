@@ -6,6 +6,7 @@ export type RawItem = {
   url: string;
   published: string | null;
   snippet: string;
+  imageUrl: string | null;
 };
 
 const parser = new Parser({ timeout: 15000, headers: { "User-Agent": "curl/8.0" } });
@@ -32,6 +33,25 @@ function strip(html: string | undefined, max = 320): string {
   return text.slice(0, max);
 }
 
+function itemImage(i: {
+  enclosure?: { url?: string };
+  "media:content"?: { url?: string } | { $?: { url?: string } };
+  socialimage?: string;
+}): string | null {
+  const enc = i.enclosure?.url;
+  if (enc && /^https?:\/\//.test(enc)) return enc;
+  const media = i["media:content"];
+  const mediaUrl =
+    media && typeof media === "object"
+      ? (media as { url?: string; $?: { url?: string } }).url ??
+        (media as { $?: { url?: string } }).$?.url
+      : undefined;
+  if (mediaUrl && /^https?:\/\//.test(mediaUrl)) return mediaUrl;
+  const social = (i as { socialimage?: string }).socialimage;
+  if (social && /^https?:\/\//.test(social)) return social;
+  return null;
+}
+
 async function fetchRss(a: Adapter): Promise<RawItem[]> {
   const feed = await parser.parseURL(a.url);
   return (feed.items ?? []).slice(0, 10).map((i) => ({
@@ -40,13 +60,14 @@ async function fetchRss(a: Adapter): Promise<RawItem[]> {
     url: (i.link ?? "").split("?")[0],
     published: i.isoDate ?? (i.pubDate ? new Date(i.pubDate).toISOString() : null),
     snippet: strip(i.contentSnippet ?? i.content),
+    imageUrl: itemImage(i),
   }));
 }
 
 async function fetchGdelt(a: Adapter): Promise<RawItem[]> {
   const res = await fetch(a.url, { signal: AbortSignal.timeout(15000) });
   if (!res.ok) throw new Error(`gdelt ${res.status}`);
-  const data = (await res.json()) as { articles?: { url: string; title: string; seendate?: string; domain?: string }[] };
+  const data = (await res.json()) as { articles?: { url: string; title: string; seendate?: string; domain?: string; socialimage?: string }[] };
   return (data.articles ?? []).slice(0, 15).map((art) => ({
     outlet: art.domain ?? a.outlet,
     title: strip(art.title, 200),
@@ -55,6 +76,7 @@ async function fetchGdelt(a: Adapter): Promise<RawItem[]> {
       ? `${art.seendate.slice(0, 4)}-${art.seendate.slice(4, 6)}-${art.seendate.slice(6, 8)}T${art.seendate.slice(9, 11)}:${art.seendate.slice(11, 13)}:00Z`
       : null,
     snippet: "",
+    imageUrl: art.socialimage && /^https?:\/\//.test(art.socialimage) ? art.socialimage : null,
   }));
 }
 

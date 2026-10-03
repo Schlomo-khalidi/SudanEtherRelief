@@ -99,8 +99,8 @@ export type EventDetail = {
   approval: { actor: string; at: string } | null;
   chain: EventChainRow | null;
   lanes: LaneChainRow[];
-  /** field asset when attached; otherwise a topic-matched library image */
-  photo: { path: string; caption: string; credit: string; library: boolean } | null;
+  /** field asset, the story outlet's own image, or a topic-matched library image */
+  photo: { path: string; caption: string; credit: string; kind: "field" | "library" | "source" } | null;
 };
 
 export async function getEventDetail(slug: string): Promise<EventDetail | null> {
@@ -132,7 +132,7 @@ export async function getEventDetail(slug: string): Promise<EventDetail | null> 
 
   const photoRow = (photoRes.data ?? null) as { storage_path: string; meta: { caption?: string; credit?: string } } | null;
   const photo = photoRow
-    ? { path: photoRow.storage_path, caption: photoRow.meta?.caption ?? "Ethar Relief field photo", credit: photoRow.meta?.credit ?? "Ethar Relief", library: false }
+    ? { path: photoRow.storage_path, caption: photoRow.meta?.caption ?? "Ethar Relief field photo", credit: photoRow.meta?.credit ?? "Ethar Relief", kind: "source" as const }
     : libraryImagery(e, `${e.headline} ${e.explainer_what ?? ""}`);
 
   return {

@@ -65,14 +65,14 @@ export default async function AdminPage({
     db.from("story_packs").select("*").in("event_id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]).eq("status", "current"),
     db.from("editorial_decisions").select("*").in("event_id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]).order("created_at", { ascending: false }),
     db.from("event_chain").select("*").in("event_id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]),
-    db.from("assets").select("id, event_id").in("event_id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]),
+    db.from("assets").select("id, event_id, storage_path, meta").in("event_id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]),
   ]);
 
   const allSources = (sourcesRes.data ?? []) as Pick<SourceRow, "id" | "event_id" | "outlet" | "is_field_report">[];
   const allPacks = (packsRes.data ?? []) as StoryPackRow[];
   const allDecisions = (decisionsRes.data ?? []) as DecisionRow[];
   const allChains = (chainsRes.data ?? []) as EventChainRow[];
-  const allAssets = (assetsRes.data ?? []) as { id: string; event_id: string }[];
+  const allAssets = (assetsRes.data ?? []) as { id: string; event_id: string; storage_path: string; meta: { caption?: string; credit?: string } }[];
 
   const flagsFor = (ev: EventRow, pack: StoryPackRow | null, srcCount: number, hasAsset: boolean): string[] => {
     const flags: string[] = [];

@@ -87,7 +87,7 @@ export default async function EventPage({
           <figure className="event-photo">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={detail.photo.path} alt={detail.photo.caption} />
-            <span className="badge">{detail.photo.library ? "Ethar Relief — illustrative" : "Ethar field asset"}</span>
+            <span className="badge">{detail.photo.kind === "source" ? `Image: ${detail.photo.credit}` : detail.photo.kind === "field" ? "Ethar field asset" : "Ethar Relief — illustrative"}</span>
             <span className="credit">Credit: {detail.photo.credit}</span>
             <figcaption className="cap">{detail.photo.caption} — no AI-invented imagery, per policy.</figcaption>
           </figure>

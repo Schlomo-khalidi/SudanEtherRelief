@@ -23,8 +23,13 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   const photoPath = detail?.photo?.path;
   if (photoPath) {
     try {
-      const buf = await readFile(join(process.cwd(), "public", photoPath.replace(/^\//, "")));
-      photoSrc = `data:image/jpeg;base64,${buf.toString("base64")}`;
+      if (photoPath.startsWith("http")) {
+        const res = await fetch(photoPath, { signal: AbortSignal.timeout(15_000) });
+        if (res.ok) photoSrc = `data:${res.headers.get("content-type") ?? "image/jpeg"};base64,${Buffer.from(await res.arrayBuffer()).toString("base64")}`;
+      } else {
+        const buf = await readFile(join(process.cwd(), "public", photoPath.replace(/^\//, "")));
+        photoSrc = `data:image/jpeg;base64,${buf.toString("base64")}`;
+      }
     } catch {
       photoSrc = null;
     }
@@ -60,7 +65,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
                 borderRadius: 8,
               }}
             >
-              ETHAR RELIEF
+              ${detail?.photo?.kind === "source" ? `IMAGE: ${detail.photo.credit.toUpperCase()}` : detail?.photo?.kind === "field" ? "ETHAR FIELD ASSET" : "ETHAR RELIEF — ILLUSTRATIVE"}
             </div>
           </div>
         ) : (
