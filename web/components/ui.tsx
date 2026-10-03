@@ -46,13 +46,15 @@ export function Card({
   children,
   pad = true,
   style,
+  id,
 }: {
   children: ReactNode;
   pad?: boolean;
   style?: React.CSSProperties;
+  id?: string;
 }) {
   return (
-    <div className={`card${pad ? " card-pad" : ""}`} style={style}>
+    <div className={`card${pad ? " card-pad" : ""}`} style={style} id={id}>
       {children}
     </div>
   );

@@ -128,7 +128,7 @@ export default async function RelayDashboard({
                         <div style={{ fontSize: 13.5, fontWeight: 600, lineHeight: 1.35 }}>{ev.headline}</div>
                       </div>
                       {carried ? (
-                        <Link className="btn btn-outline" href={`/relay/me?code=${myLinks.find((l) => l.event_id === ev.id)!.code}`}>My kit →</Link>
+                        <Link className="btn btn-outline" href={`/relay/me?code=${myLinks.find((l) => l.event_id === ev.id)!.code}#my-kit`}>My kit →</Link>
                       ) : (
                         <form action={relayEvent}>
                           <input type="hidden" name="eventId" value={ev.id} />
@@ -143,7 +143,7 @@ export default async function RelayDashboard({
 
             {/* kit */}
             {kitLink && kitEvent && kit ? (
-              <Card pad>
+              <Card pad id="my-kit">
                 <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", marginBottom: 10 }}>
                   <Stamp>Witness verified</Stamp>
                   <b style={{ fontSize: 15 }}>{kitEvent.headline}</b>
