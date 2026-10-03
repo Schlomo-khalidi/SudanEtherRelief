@@ -212,12 +212,30 @@ imageSourceIdx: if one of the items carries a photo that best represents this st
       continue;
     }
 
-    const { data: srcs, error: srcErr } = await db
-      .from("sources")
-      .insert(clusterItems.map((it) => ({ event_id: ev!.id, ...sourceRow(it) })))
-      .select("id");
-    if (srcErr) {
-      summary.errors.push(`insert sources: ${srcErr.message}`);
+    const sourceRows = clusterItems.map((it) => ({ event_id: ev!.id, ...sourceRow(it) }));
+    let srcs: { id: string }[] | null = null;
+    let srcErr: { message: string } | null = null;
+    try {
+      const r = await db
+        .from("sources")
+        .insert(sourceRows)
+        .select("id");
+      srcs = r.data;
+      srcErr = r.error;
+    } catch {
+      srcErr = { message: "sources insert failed" };
+    }
+    // pre-0004 databases lack sources.image_url — retry without it and let
+    // the imagery live on the asset instead
+    if (srcErr && srcErr.message.includes("image_url")) {
+      const stripped = sourceRows.map(({ image_url, ...rest }) => rest);
+      const r = await db.from("sources").insert(stripped).select("id");
+      srcs = r.data;
+      srcErr = r.error;
+    }
+    if (srcErr || !srcs) {
+      summary.errors.push(`insert sources: ${srcErr?.message ?? "failed"}`);
+      await db.from("events").delete().eq("id", ev!.id); // no orphan event without sources
       continue;
     }
 
